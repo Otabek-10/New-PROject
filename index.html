@@ -1,0 +1,3336 @@
+<!doctype html>
+<html lang="uz">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>SmartEdu</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Onest:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      /* Maket: chapda daftar-varaq kabi yon menyu, o‘ngda katak qog‘ozli ish maydoni.
+   Telefonda yon menyu pastki tab-panelga almashadi. */
+      :root {
+        --bg: #eef2f9;
+        --paper: #fbfcff;
+        --ink: #141b34;
+        --muted: #5b6584;
+        --line: #d5dcec;
+        --grid: rgba(40, 69, 214, 0.07);
+        --soft: #e3e9fa;
+        --accent: #2845d6;
+        --accent-ink: #ffffff;
+        --mark: #ffe066;
+        --good: #1e8e5a;
+        --bad: #c8362f;
+        --warn: #b7791f;
+        --s-math: #3b5bdb;
+        --s-fizika: #e8590c;
+        --s-ingliz: #0c8599;
+        --s-info: #7048e8;
+        --f-display: "Bricolage Grotesque", "Onest", system-ui, sans-serif;
+        --f-body: "Onest", system-ui, -apple-system, "Segoe UI", sans-serif;
+        --f-mono: "JetBrains Mono", ui-monospace, Menlo, Consolas, monospace;
+        color-scheme: light;
+      }
+      @media (prefers-color-scheme: dark) {
+        :root:not([data-theme="light"]) {
+          --bg: #0c1224;
+          --paper: #121a33;
+          --ink: #e8ecfa;
+          --muted: #98a3c7;
+          --line: #26315a;
+          --grid: rgba(140, 170, 255, 0.07);
+          --soft: #1a2547;
+          --accent: #8aa2ff;
+          --accent-ink: #0c1224;
+          --mark: #7a6a12;
+          --good: #4cc38a;
+          --bad: #ff7a72;
+          --warn: #e5b454;
+          --s-math: #8aa2ff;
+          --s-fizika: #ff9159;
+          --s-ingliz: #4cc9db;
+          --s-info: #a992ff;
+          color-scheme: dark;
+        }
+      }
+      :root[data-theme="dark"] {
+        --bg: #0c1224;
+        --paper: #121a33;
+        --ink: #e8ecfa;
+        --muted: #98a3c7;
+        --line: #26315a;
+        --grid: rgba(140, 170, 255, 0.07);
+        --soft: #1a2547;
+        --accent: #8aa2ff;
+        --accent-ink: #0c1224;
+        --mark: #7a6a12;
+        --good: #4cc38a;
+        --bad: #ff7a72;
+        --warn: #e5b454;
+        --s-math: #8aa2ff;
+        --s-fizika: #ff9159;
+        --s-ingliz: #4cc9db;
+        --s-info: #a992ff;
+        color-scheme: dark;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      html {
+        -webkit-text-size-adjust: 100%;
+      }
+      body {
+        margin: 0;
+        background-color: var(--bg);
+        color: var(--ink);
+        background-image:
+          linear-gradient(var(--grid) 1px, transparent 1px),
+          linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+        background-size: 28px 28px;
+        font: 15px/1.6 var(--f-body);
+        -webkit-font-smoothing: antialiased;
+      }
+      h1,
+      h2,
+      h3 {
+        font-family: var(--f-display);
+        margin: 0;
+        letter-spacing: -0.01em;
+        text-wrap: balance;
+        line-height: 1.15;
+      }
+      h1 {
+        font-size: clamp(28px, 5vw, 40px);
+        font-weight: 800;
+      }
+      h2 {
+        font-size: 20px;
+        font-weight: 700;
+      }
+      h3 {
+        font-size: 16px;
+        font-weight: 700;
+      }
+      p {
+        margin: 0;
+      }
+      a {
+        color: inherit;
+      }
+      button,
+      input,
+      select,
+      textarea {
+        font: inherit;
+        color: inherit;
+      }
+      :focus-visible {
+        outline: 2px solid var(--accent);
+        outline-offset: 2px;
+      }
+      .mk {
+        background: linear-gradient(transparent 58%, var(--mark) 58%);
+        padding: 0 0.08em;
+      }
+      .eyebrow {
+        font: 500 12px var(--f-mono);
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: var(--muted);
+      }
+      .muted {
+        color: var(--muted);
+      }
+      .mono {
+        font-family: var(--f-mono);
+        font-variant-numeric: tabular-nums;
+      }
+
+      /* qobiq */
+      .shell {
+        display: grid;
+        grid-template-columns: 236px minmax(0, 1fr);
+        min-height: 100vh;
+      }
+      .side {
+        position: sticky;
+        top: 0;
+        align-self: start;
+        height: 100vh;
+        padding: 24px 14px;
+        display: flex;
+        flex-direction: column;
+        gap: 26px;
+        background: var(--paper);
+        border-right: 1px solid var(--line);
+      }
+      .brand {
+        font: 800 24px var(--f-display);
+        letter-spacing: -0.02em;
+        padding: 0 10px;
+        text-decoration: none;
+      }
+      .brand .mk {
+        padding: 0 0.12em;
+      }
+      .nav {
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+      }
+      .nav a {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 10px 12px;
+        border-radius: 9px;
+        text-decoration: none;
+        color: var(--muted);
+        font-weight: 500;
+      }
+      .nav a svg,
+      .tabbar a svg {
+        width: 20px;
+        height: 20px;
+        flex: none;
+        fill: none;
+        stroke: currentColor;
+        stroke-width: 1.7;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+      }
+      .nav a:hover {
+        background: var(--soft);
+        color: var(--ink);
+      }
+      .nav a[aria-current="page"] {
+        background: var(--soft);
+        color: var(--ink);
+        font-weight: 600;
+        box-shadow: inset 3px 0 0 var(--accent);
+      }
+      .side-foot {
+        margin-top: auto;
+        padding: 0 10px;
+      }
+      .col {
+        min-width: 0;
+      }
+      .mhead {
+        display: none;
+      }
+      main {
+        padding: 30px clamp(16px, 4vw, 48px) 90px;
+        max-width: 1000px;
+        display: flex;
+        flex-direction: column;
+        gap: 22px;
+      }
+      .tabbar {
+        display: none;
+      }
+
+      /* bloklar */
+      .card {
+        background: var(--paper);
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        padding: 20px;
+        min-width: 0;
+      }
+      .card.flat {
+        background: transparent;
+      }
+      .row {
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+        align-items: center;
+      }
+      .row.between {
+        justify-content: space-between;
+      }
+      .grid2 {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 16px;
+      }
+      .stack {
+        display: flex;
+        flex-direction: column;
+        gap: 14px;
+      }
+      .hero {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        padding-top: 4px;
+      }
+      .lead {
+        color: var(--muted);
+        font-size: 17px;
+        max-width: 56ch;
+      }
+      .banner {
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: space-between;
+        border: 1px dashed var(--warn);
+        border-radius: 12px;
+        padding: 12px 16px;
+        background: var(--paper);
+        font-size: 14px;
+      }
+      .banner b {
+        font-weight: 600;
+      }
+
+      .btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        min-height: 42px;
+        padding: 9px 18px;
+        border-radius: 9px;
+        border: 1px solid var(--line);
+        background: var(--paper);
+        cursor: pointer;
+        font-weight: 600;
+        text-decoration: none;
+        transition:
+          background 0.15s,
+          border-color 0.15s,
+          transform 0.1s;
+      }
+      .btn:hover {
+        border-color: var(--accent);
+      }
+      .btn:active {
+        transform: translateY(1px);
+      }
+      .btn.primary {
+        background: var(--accent);
+        color: var(--accent-ink);
+        border-color: var(--accent);
+      }
+      .btn.primary:hover {
+        filter: brightness(1.08);
+      }
+      .btn.small {
+        min-height: 34px;
+        padding: 5px 12px;
+        font-size: 13px;
+      }
+      .btn.danger {
+        color: var(--bad);
+        border-color: var(--bad);
+      }
+      .btn[disabled] {
+        opacity: 0.5;
+        cursor: not-allowed;
+      }
+
+      .pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        font: 500 12px var(--f-mono);
+        padding: 3px 9px;
+        border-radius: 99px;
+        border: 1px solid var(--line);
+        color: var(--muted);
+        white-space: nowrap;
+      }
+      .pill.high {
+        color: var(--good);
+        border-color: var(--good);
+      }
+      .pill.mid {
+        color: var(--warn);
+        border-color: var(--warn);
+      }
+      .pill.low {
+        color: var(--bad);
+        border-color: var(--bad);
+      }
+      .dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background: var(--c, var(--accent));
+        flex: none;
+      }
+
+      .bar {
+        height: 8px;
+        border-radius: 99px;
+        background: var(--soft);
+        overflow: hidden;
+      }
+      .bar i {
+        display: block;
+        height: 100%;
+        background: var(--c, var(--accent));
+        border-radius: 99px;
+        min-width: 2px;
+      }
+
+      .next {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto;
+        gap: 18px;
+        align-items: center;
+        background: var(--paper);
+        box-shadow: inset 0 -4px 0 var(--accent);
+      }
+      .next h2 {
+        font-size: clamp(22px, 3.4vw, 28px);
+      }
+      .strip {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 0;
+      }
+      .strip > div {
+        padding: 4px 20px;
+        border-left: 1px solid var(--line);
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+      }
+      .strip > div:first-child {
+        border-left: 0;
+        padding-left: 0;
+      }
+      .strip .big {
+        font: 700 28px var(--f-display);
+        font-variant-numeric: tabular-nums;
+      }
+
+      .subj {
+        display: grid;
+        grid-template-columns: 150px minmax(0, 1fr) 64px;
+        gap: 14px;
+        align-items: center;
+        padding: 10px 0;
+        border-top: 1px solid var(--line);
+      }
+      .subj:first-of-type {
+        border-top: 0;
+      }
+      .subj .name {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-weight: 600;
+      }
+
+      /* darslar */
+      .chips {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+      }
+      .chip {
+        border: 1px solid var(--line);
+        background: var(--paper);
+        border-radius: 99px;
+        padding: 6px 14px;
+        cursor: pointer;
+        font-weight: 500;
+        font-size: 14px;
+      }
+      .chip[aria-pressed="true"] {
+        background: var(--ink);
+        color: var(--bg);
+        border-color: var(--ink);
+      }
+      .topics {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
+        gap: 14px;
+      }
+      .topic {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        text-decoration: none;
+        position: relative;
+        border-top: 4px solid var(--c);
+        transition:
+          transform 0.15s,
+          border-color 0.15s;
+      }
+      .topic:hover {
+        transform: translateY(-2px);
+      }
+      .topic .t {
+        font: 700 18px var(--f-display);
+      }
+      .topic .meta {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+        align-items: center;
+        margin-top: auto;
+      }
+      .lesson p {
+        margin: 0 0 14px;
+        max-width: 65ch;
+        font-size: 16px;
+      }
+      .lesson .ex {
+        border-left: 4px solid var(--mark);
+        padding: 2px 0 2px 16px;
+        margin: 6px 0;
+      }
+      .crumb {
+        font: 500 12px var(--f-mono);
+        color: var(--muted);
+        text-decoration: none;
+        letter-spacing: 0.04em;
+      }
+      .crumb:hover {
+        color: var(--accent);
+      }
+      details summary {
+        cursor: pointer;
+        font-weight: 600;
+      }
+      details[open] summary {
+        margin-bottom: 8px;
+      }
+
+      /* test */
+      .qtext {
+        font: 700 clamp(20px, 3vw, 26px) var(--f-display);
+        line-height: 1.25;
+        max-width: 30ch;
+      }
+      .opts {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        max-width: 560px;
+      }
+      .opt {
+        display: flex;
+        gap: 12px;
+        align-items: center;
+        text-align: left;
+        width: 100%;
+        padding: 12px 14px;
+        border-radius: 10px;
+        border: 1.5px solid var(--line);
+        background: var(--paper);
+        cursor: pointer;
+        min-height: 48px;
+      }
+      .opt:hover:not([disabled]) {
+        border-color: var(--accent);
+      }
+      .opt .k {
+        font: 500 13px var(--f-mono);
+        width: 26px;
+        height: 26px;
+        border-radius: 7px;
+        display: grid;
+        place-items: center;
+        background: var(--soft);
+        flex: none;
+      }
+      .opt.ok {
+        border-color: var(--good);
+        background: color-mix(in srgb, var(--good) 12%, var(--paper));
+      }
+      .opt.no {
+        border-color: var(--bad);
+        background: color-mix(in srgb, var(--bad) 10%, var(--paper));
+      }
+      .opt[disabled] {
+        cursor: default;
+      }
+      .why {
+        border-radius: 10px;
+        padding: 12px 14px;
+        background: var(--soft);
+        max-width: 560px;
+      }
+      .steps {
+        display: flex;
+        gap: 5px;
+      }
+      .steps i {
+        flex: 1;
+        height: 6px;
+        border-radius: 99px;
+        background: var(--soft);
+      }
+      .steps i.on {
+        background: var(--accent);
+      }
+      .steps i.bad {
+        background: var(--bad);
+      }
+      .steps i.good {
+        background: var(--good);
+      }
+      .ring {
+        width: 132px;
+        height: 132px;
+        flex: none;
+      }
+      .ring circle {
+        fill: none;
+        stroke-width: 12;
+      }
+      .ring .bg {
+        stroke: var(--soft);
+      }
+      .ring .fg {
+        stroke: var(--accent);
+        stroke-linecap: round;
+        transform: rotate(-90deg);
+        transform-origin: 50% 50%;
+      }
+      .ring text {
+        fill: var(--ink);
+        font: 800 28px var(--f-display);
+        text-anchor: middle;
+      }
+      .wrong {
+        border-top: 1px solid var(--line);
+        padding: 12px 0;
+      }
+      .wrong:first-child {
+        border-top: 0;
+      }
+
+      /* natijalar */
+      .chartwrap {
+        overflow-x: auto;
+      }
+      .chartwrap svg {
+        display: block;
+        min-width: 520px;
+        width: 100%;
+        height: auto;
+      }
+      .gl {
+        stroke: var(--line);
+        stroke-width: 1;
+      }
+      .ax {
+        fill: var(--muted);
+        font: 11px var(--f-mono);
+      }
+      .ln {
+        fill: none;
+        stroke: var(--accent);
+        stroke-width: 2.5;
+        stroke-linejoin: round;
+        stroke-linecap: round;
+      }
+      .ar {
+        fill: var(--accent);
+        opacity: 0.13;
+      }
+      .pt {
+        fill: var(--paper);
+        stroke: var(--accent);
+        stroke-width: 2;
+      }
+      .pt.last {
+        fill: var(--accent);
+      }
+      .vl {
+        fill: var(--ink);
+        font: 600 12px var(--f-mono);
+        text-anchor: middle;
+      }
+      .tablewrap {
+        overflow-x: auto;
+      }
+      table {
+        border-collapse: collapse;
+        width: 100%;
+        min-width: 420px;
+      }
+      th,
+      td {
+        text-align: left;
+        padding: 9px 10px;
+        border-top: 1px solid var(--line);
+        font-size: 14px;
+      }
+      th {
+        font: 500 11px var(--f-mono);
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        color: var(--muted);
+        border-top: 0;
+      }
+      td.n,
+      th.n {
+        text-align: right;
+        font-family: var(--f-mono);
+        font-variant-numeric: tabular-nums;
+      }
+      .mrow {
+        display: grid;
+        grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr) 110px;
+        gap: 14px;
+        align-items: center;
+        padding: 9px 0;
+        border-top: 1px solid var(--line);
+      }
+      .mrow:first-child {
+        border-top: 0;
+      }
+
+      /* profil */
+      .avatar {
+        width: 64px;
+        height: 64px;
+        border-radius: 16px;
+        background: var(--accent);
+        color: var(--accent-ink);
+        display: grid;
+        place-items: center;
+        font: 800 28px var(--f-display);
+        flex: none;
+      }
+      .form {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 16px;
+      }
+      .field {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+      }
+      .field label {
+        font: 500 12px var(--f-mono);
+        letter-spacing: 0.05em;
+        text-transform: uppercase;
+        color: var(--muted);
+      }
+      .field input,
+      .field select,
+      .field textarea {
+        min-height: 42px;
+        padding: 8px 12px;
+        border-radius: 9px;
+        border: 1.5px solid var(--line);
+        background: var(--bg);
+        width: 100%;
+      }
+      .field input:focus,
+      .field select:focus,
+      .field textarea:focus {
+        border-color: var(--accent);
+        outline: 0;
+      }
+
+      /* AI tutor */
+      .tutor {
+        display: flex;
+        flex-direction: column;
+        gap: 14px;
+      }
+      .chat {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        min-height: 280px;
+        max-height: min(58vh, 560px);
+        overflow-y: auto;
+        padding: 4px 2px;
+      }
+      .msg {
+        max-width: min(620px, 92%);
+        padding: 11px 15px;
+        border-radius: 14px;
+        line-height: 1.55;
+        overflow-wrap: anywhere;
+      }
+      .msg.u {
+        align-self: flex-end;
+        background: var(--accent);
+        color: var(--accent-ink);
+        border-bottom-right-radius: 4px;
+      }
+      .msg.a {
+        align-self: flex-start;
+        background: var(--paper);
+        border: 1px solid var(--line);
+        border-bottom-left-radius: 4px;
+      }
+      .msg ul {
+        margin: 6px 0;
+        padding-left: 20px;
+      }
+      .msg p + p {
+        margin-top: 8px;
+      }
+      .msg code {
+        font-family: var(--f-mono);
+        font-size: 0.92em;
+        background: var(--soft);
+        padding: 1px 5px;
+        border-radius: 5px;
+        color: var(--ink);
+      }
+      .msg.u code {
+        background: rgba(255, 255, 255, 0.2);
+        color: inherit;
+      }
+      .composer {
+        display: flex;
+        gap: 10px;
+        align-items: flex-end;
+      }
+      .composer textarea {
+        flex: 1;
+        min-width: 0;
+        resize: none;
+        min-height: 46px;
+        max-height: 140px;
+        padding: 11px 14px;
+        border-radius: 12px;
+        border: 1.5px solid var(--line);
+        background: var(--paper);
+      }
+      .composer textarea:focus {
+        border-color: var(--accent);
+        outline: 0;
+      }
+      .empty {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        padding: 26px 6px;
+      }
+      .note {
+        font-size: 13px;
+        color: var(--muted);
+      }
+
+      .practice-item {
+        border-top: 1px solid var(--line);
+        padding: 12px 0;
+      }
+      .practice-item:first-child {
+        border-top: 0;
+      }
+      .fade {
+        animation: rise 0.35s ease both;
+      }
+      @keyframes rise {
+        from {
+          opacity: 0;
+          transform: translateY(6px);
+        }
+        to {
+          opacity: 1;
+          transform: none;
+        }
+      }
+      .dots span {
+        display: inline-block;
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: var(--muted);
+        margin-right: 4px;
+        animation: blink 1s infinite;
+      }
+      .dots span:nth-child(2) {
+        animation-delay: 0.15s;
+      }
+      .dots span:nth-child(3) {
+        animation-delay: 0.3s;
+      }
+      @keyframes blink {
+        0%,
+        80%,
+        100% {
+          opacity: 0.25;
+        }
+        40% {
+          opacity: 1;
+        }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        * {
+          animation: none !important;
+          transition: none !important;
+        }
+      }
+
+      @media (max-width: 860px) {
+        .shell {
+          grid-template-columns: minmax(0, 1fr);
+        }
+        .side {
+          display: none;
+        }
+        .mhead {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          padding: 14px max(16px, env(safe-area-inset-left, 0px)) 0
+            max(16px, env(safe-area-inset-left, 0px));
+        }
+        main {
+          padding-inline: max(16px, env(safe-area-inset-left, 0px));
+          padding-block: 18px 100px;
+        }
+        .tabbar {
+          display: grid;
+          grid-template-columns: repeat(6, minmax(0, 1fr));
+          position: fixed;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          z-index: 20;
+          background: var(--paper);
+          border-top: 1px solid var(--line);
+          padding: 6px max(6px, env(safe-area-inset-left, 0px))
+            calc(6px + env(safe-area-inset-bottom, 0px))
+            max(6px, env(safe-area-inset-right, 0px));
+        }
+        .tabbar a {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          gap: 3px;
+          padding: 6px 2px;
+          border-radius: 9px;
+          text-decoration: none;
+          color: var(--muted);
+          font-size: 10.5px;
+          font-weight: 500;
+          min-width: 0;
+        }
+        .tabbar a span {
+          max-width: 100%;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+        }
+        .tabbar a[aria-current="page"] {
+          color: var(--accent);
+          background: var(--soft);
+        }
+        .next {
+          grid-template-columns: minmax(0, 1fr);
+        }
+        .subj {
+          grid-template-columns: 110px minmax(0, 1fr) 52px;
+        }
+        .mrow {
+          grid-template-columns: minmax(0, 1fr) 90px;
+        }
+        .mrow .bar {
+          grid-column: 1/-1;
+          order: 3;
+        }
+        .strip > div {
+          border-left: 0;
+          border-top: 1px solid var(--line);
+          padding: 12px 0;
+        }
+        .strip > div:first-child {
+          border-top: 0;
+          padding-top: 0;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="shell">
+      <aside class="side">
+        <a class="brand" href="#bosh">Smart<span class="mk">Edu</span></a>
+        <nav class="nav" id="nav" aria-label="Asosiy menyu"></nav>
+        <div class="side-foot">
+          <button class="btn small" data-act="theme" type="button">
+            Mavzu: yorug‘ / qorong‘i
+          </button>
+        </div>
+      </aside>
+      <div class="col">
+        <header class="mhead">
+          <a class="brand" href="#bosh" style="padding: 0"
+            >Smart<span class="mk">Edu</span></a
+          >
+          <button
+            class="btn small"
+            data-act="theme"
+            type="button"
+            aria-label="Yorug‘ yoki qorong‘i mavzu"
+          >
+            Mavzu
+          </button>
+        </header>
+        <main id="view" tabindex="-1"></main>
+      </div>
+      <nav class="tabbar" id="tabbar" aria-label="Asosiy menyu (telefon)"></nav>
+    </div>
+
+    <script>
+      (function () {
+        "use strict";
+
+        /* ================= SOZLAMALAR ================= */
+        // AI Tutor server manzili. server.js ishga tushirilganda /api/tutor ishlaydi.
+        // Server bo‘lmasa, sayt dars materiallari asosida oflayn javob beradi.
+        const CONFIG = { AI_ENDPOINT: "/api/tutor" };
+
+        /* ================= MA’LUMOTLAR ================= */
+        const SUBJECTS = [
+          { id: "math", name: "Matematika", c: "var(--s-math)" },
+          { id: "fizika", name: "Fizika", c: "var(--s-fizika)" },
+          { id: "ingliz", name: "Ingliz tili", c: "var(--s-ingliz)" },
+          { id: "info", name: "Informatika", c: "var(--s-info)" },
+        ];
+
+        const TOPICS = [
+          {
+            id: "kasrlar",
+            subject: "math",
+            title: "Oddiy kasrlar",
+            minutes: 8,
+            lesson: [
+              "Kasr butunning bir qismini bildiradi. Pitsa 8 bo‘lakka kesilgan va siz 3 bo‘lagini yedingiz: bu 3/8 kasr. Tepadagi son surat (nechta bo‘lak olindi), pastdagi son maxraj (butun nechta teng bo‘lakka bo‘lingan).",
+              "Maxrajlari bir xil kasrlar qo‘shilganda faqat suratlar qo‘shiladi: 2/7 + 3/7 = 5/7. Maxrajlar har xil bo‘lsa, avval umumiy maxrajga keltiriladi: 1/2 + 1/4 = 2/4 + 1/4 = 3/4.",
+              "Kasrni qisqartirish uchun surat va maxrajni ikkalasiga ham bo‘linadigan songa bo‘ling: 6/9 = 2/3 (ikkalasi 3 ga bo‘lindi).",
+            ],
+            simple:
+              "Kasr pitsa bo‘laklariga o‘xshaydi. Pastdagi son pitsa nechta teng bo‘lakka kesilganini, tepadagi son sizda nechta bo‘lak borligini aytadi. Bo‘laklar bir xil kattalikda bo‘lsagina ularni qo‘shish oson, shuning uchun kasrlarni avval bir xil maxrajga keltiramiz.",
+            example: {
+              q: "3/4 − 1/2 = ?",
+              a: "1/2 ni 2/4 ga aylantiramiz: 3/4 − 2/4 = 1/4.",
+            },
+            questions: [
+              {
+                q: "1/2 + 1/4 nechaga teng?",
+                options: ["2/6", "3/4", "1/6", "2/4"],
+                correct: 1,
+                why: "Umumiy maxraj 4: 1/2 = 2/4, shuning uchun 2/4 + 1/4 = 3/4.",
+              },
+              {
+                q: "2/6 kasrni qisqartiring.",
+                options: ["1/2", "1/3", "2/3", "1/4"],
+                correct: 1,
+                why: "Surat va maxrajni 2 ga bo‘lamiz: 2/6 = 1/3.",
+              },
+              {
+                q: "Qaysi kasr eng katta?",
+                options: ["3/8", "1/2", "5/12", "2/5"],
+                correct: 1,
+                why: "Kasrlarni o‘nlik ko‘rinishga o‘tkazamiz: 0,375; 0,5; 0,417; 0,4. Eng kattasi 1/2.",
+              },
+            ],
+          },
+          {
+            id: "tenglamalar",
+            subject: "math",
+            title: "Chiziqli tenglamalar",
+            minutes: 9,
+            lesson: [
+              "Tenglama noma’lum son (odatda x) qatnashgan tenglikdir. Uni yechish noma’lumni yolg‘iz qoldirish demakdir.",
+              "Asosiy qoida: tenglikning ikkala tomoniga bir xil amalni qo‘llasak, tenglik buzilmaydi. x + 7 = 15 da ikkala tomondan 7 ni ayiramiz: x = 8.",
+              "Ko‘paytma bo‘lsa, ikkala tomonni bo‘lamiz: 3x = 18 → x = 6. Ikki amal bo‘lsa, avval qo‘shish yoki ayirishni, keyin bo‘lishni bajaring: 2x + 5 = 17 → 2x = 12 → x = 6.",
+            ],
+            simple:
+              "Tenglama muvozanatdagi tarozi kabi. Bir pallaga nima qo‘shsangiz yoki undan nima olsangiz, ikkinchi pallada ham xuddi shuni qilishingiz kerak, aks holda tarozi qiyshayadi. Maqsad: x ni bitta o‘zi qoldirish.",
+            example: {
+              q: "4x − 3 = 13",
+              a: "Ikkala tomonga 3 qo‘shamiz: 4x = 16. Ikkala tomonni 4 ga bo‘lamiz: x = 4.",
+            },
+            questions: [
+              {
+                q: "x + 7 = 15 tenglamada x nechaga teng?",
+                options: ["7", "8", "9", "22"],
+                correct: 1,
+                why: "Ikkala tomondan 7 ni ayiramiz: x = 15 − 7 = 8.",
+              },
+              {
+                q: "3x = 18 tenglamani yeching.",
+                options: ["5", "6", "15", "54"],
+                correct: 1,
+                why: "Ikkala tomonni 3 ga bo‘lamiz: x = 18 : 3 = 6.",
+              },
+              {
+                q: "2x + 5 = 17 tenglamani yeching.",
+                options: ["4", "5", "6", "11"],
+                correct: 2,
+                why: "Avval 5 ni ayiramiz: 2x = 12. Keyin 2 ga bo‘lamiz: x = 6.",
+              },
+            ],
+          },
+          {
+            id: "foiz",
+            subject: "math",
+            title: "Foizlar",
+            minutes: 7,
+            lesson: [
+              "Foiz butunning yuzdan bir qismi. 1% = 1/100 = 0,01. 50% yarim, 25% chorak, 10% esa o‘ndan bir qism degani.",
+              "Sonning foizini topish uchun sonni foizning o‘nlik ko‘rinishiga ko‘paytiramiz: 200 ning 10% i = 200 · 0,10 = 20.",
+              "Chegirma masalasi: narx 80 000 so‘m, chegirma 25%. Chegirma = 80 000 · 0,25 = 20 000 so‘m. Yangi narx = 80 000 − 20 000 = 60 000 so‘m.",
+            ],
+            simple:
+              "Foiz degani «har yuzdan». 10% degani har 100 tadan 10 tasi. Shunda 200 ning 10% ini topish oson: 200 ni 10 ga bo‘lsangiz bo‘ldi, chunki 10% = o‘ndan bir.",
+            example: {
+              q: "60 ning 50% i nechaga teng?",
+              a: "50% yarim demak. 60 ning yarmi 30.",
+            },
+            questions: [
+              {
+                q: "200 ning 10 foizi nechaga teng?",
+                options: ["2", "10", "20", "100"],
+                correct: 2,
+                why: "10% = o‘ndan bir. 200 : 10 = 20.",
+              },
+              {
+                q: "Narxi 80 000 so‘m bo‘lgan kitobga 25% chegirma qilindi. Yangi narx qancha?",
+                options: ["55 000", "60 000", "65 000", "75 000"],
+                correct: 1,
+                why: "25% = chorak. 80 000 ning choragi 20 000. 80 000 − 20 000 = 60 000.",
+              },
+              {
+                q: "50 ning 20 foizi nechaga teng?",
+                options: ["5", "10", "20", "25"],
+                correct: 1,
+                why: "50 · 0,20 = 10. Yoki 50 ning beshdan biri: 10.",
+              },
+            ],
+          },
+          {
+            id: "tezlik",
+            subject: "fizika",
+            title: "Tekis harakat va tezlik",
+            minutes: 8,
+            lesson: [
+              "Tekis harakatda jism teng vaqtlarda teng yo‘l bosadi. Tezlik yo‘lning vaqtga nisbati: v = s / t. Bundan s = v · t va t = s / v.",
+              "Tezlik SI tizimida m/s da, kundalik hayotda km/soat da o‘lchanadi. km/soat dan m/s ga o‘tish uchun 3,6 ga bo‘linadi: 72 km/soat = 20 m/s.",
+              "Misol: avtomobil 120 km yo‘lni 2 soatda bosdi. v = 120 : 2 = 60 km/soat.",
+            ],
+            simple:
+              "Tezlik «bir soniyada (yoki bir soatda) qancha yurdingiz» degani. 60 km/soat desa, har soatda 60 km yo‘l bosiladi. Yo‘lni vaqtga bo‘lsangiz tezlik chiqadi.",
+            example: {
+              q: "Velosipedchi 15 km/soat tezlik bilan 3 soat yurdi. Qancha yo‘l bosdi?",
+              a: "s = v · t = 15 · 3 = 45 km.",
+            },
+            questions: [
+              {
+                q: "Avtomobil 120 km yo‘lni 2 soatda bosdi. Uning tezligi qancha?",
+                options: [
+                  "40 km/soat",
+                  "60 km/soat",
+                  "120 km/soat",
+                  "240 km/soat",
+                ],
+                correct: 1,
+                why: "v = s / t = 120 : 2 = 60 km/soat.",
+              },
+              {
+                q: "5 m/s tezlik bilan 10 s harakatlangan jism qancha yo‘l bosadi?",
+                options: ["2 m", "15 m", "50 m", "5 m"],
+                correct: 2,
+                why: "s = v · t = 5 · 10 = 50 m.",
+              },
+              {
+                q: "72 km/soat necha m/s ga teng?",
+                options: ["10 m/s", "20 m/s", "36 m/s", "72 m/s"],
+                correct: 1,
+                why: "km/soat ni m/s ga o‘tkazish uchun 3,6 ga bo‘lamiz: 72 : 3,6 = 20.",
+              },
+            ],
+          },
+          {
+            id: "kuch",
+            subject: "fizika",
+            title: "Kuch va Nyuton qonunlari",
+            minutes: 10,
+            lesson: [
+              "Kuch jismning tezligini yoki shaklini o‘zgartiradigan ta’sir. Kuch SI tizimida nyuton (N) bilan o‘lchanadi.",
+              "Nyutonning I qonuni (inersiya): jismga boshqa kuch ta’sir qilmasa, u tinch turadi yoki to‘g‘ri chiziqda tekis harakatini davom ettiradi.",
+              "Nyutonning II qonuni: F = m · a. Massasi 5 kg jismga 2 m/s² tezlanish berish uchun F = 5 · 2 = 10 N kuch kerak.",
+            ],
+            simple:
+              "Og‘ir aravani itarish qiyin, yengilini oson: kuch jism massasiga va qanchalik tez tezlashtirmoqchi ekaningizga bog‘liq (F = m · a). Inersiya esa jismning «o‘z holini saqlashga» intilishi: avtobus to‘satdan to‘xtasa, tanangiz oldinga davom etmoqchi bo‘ladi.",
+            example: {
+              q: "Massasi 3 kg jism 4 m/s² tezlanish bilan harakatlanmoqda. Unga qanday kuch ta’sir qiladi?",
+              a: "F = m · a = 3 · 4 = 12 N.",
+            },
+            questions: [
+              {
+                q: "Kuch SI tizimida qaysi birlikda o‘lchanadi?",
+                options: ["Joul", "Nyuton", "Vatt", "Paskal"],
+                correct: 1,
+                why: "Kuch birligi nyuton (N), nomi Isaak Nyuton sharafiga qo‘yilgan.",
+              },
+              {
+                q: "Massasi 5 kg jismga 2 m/s² tezlanish berish uchun qancha kuch kerak?",
+                options: ["2,5 N", "7 N", "10 N", "25 N"],
+                correct: 2,
+                why: "F = m · a = 5 · 2 = 10 N.",
+              },
+              {
+                q: "Avtobus keskin tormoz bersa, yo‘lovchilar oldinga engashadi. Buning sababi nima?",
+                options: [
+                  "Ishqalanish kuchi",
+                  "Inersiya",
+                  "Og‘irlik kuchi",
+                  "Elastiklik kuchi",
+                ],
+                correct: 1,
+                why: "Avtobus to‘xtaydi, lekin yo‘lovchilar tanasi oldingi tezligini saqlashga intiladi. Bu inersiya.",
+              },
+            ],
+          },
+          {
+            id: "elektr",
+            subject: "fizika",
+            title: "Elektr toki va Om qonuni",
+            minutes: 9,
+            lesson: [
+              "Elektr toki zaryadlangan zarrachalarning tartibli harakati. Tok kuchi amper (A) bilan, kuchlanish volt (V) bilan, qarshilik om (Ω) bilan o‘lchanadi.",
+              "Om qonuni: I = U / R. Kuchlanish 12 V, qarshilik 4 Ω bo‘lsa, tok kuchi I = 12 : 4 = 3 A.",
+              "Ketma-ket ulangan o‘tkazgichlarning qarshiliklari qo‘shiladi: 2 Ω + 3 Ω = 5 Ω.",
+            ],
+            simple:
+              "Elektr tokini quvurdagi suvga o‘xshating. Kuchlanish suvni itaruvchi nasos kuchi, qarshilik quvurning torligi, tok esa oqib o‘tayotgan suv miqdori. Nasos kuchli bo‘lsa tok ko‘p, quvur tor bo‘lsa tok kam.",
+            example: {
+              q: "Qarshiligi 10 Ω bo‘lgan o‘tkazgichga 50 V kuchlanish berildi. Tok kuchi qancha?",
+              a: "I = U / R = 50 : 10 = 5 A.",
+            },
+            questions: [
+              {
+                q: "Kuchlanish 12 V, qarshilik 4 Ω. Tok kuchi qancha?",
+                options: ["3 A", "8 A", "16 A", "48 A"],
+                correct: 0,
+                why: "I = U / R = 12 : 4 = 3 A.",
+              },
+              {
+                q: "Tok kuchi qaysi birlikda o‘lchanadi?",
+                options: ["Volt", "Om", "Amper", "Vatt"],
+                correct: 2,
+                why: "Tok kuchi birligi amper (A). Volt kuchlanish, om qarshilik birligi.",
+              },
+              {
+                q: "2 Ω va 3 Ω qarshiliklar ketma-ket ulangan. Umumiy qarshilik qancha?",
+                options: ["1,2 Ω", "5 Ω", "6 Ω", "1 Ω"],
+                correct: 1,
+                why: "Ketma-ket ulashda qarshiliklar qo‘shiladi: 2 + 3 = 5 Ω.",
+              },
+            ],
+          },
+          {
+            id: "present-simple",
+            subject: "ingliz",
+            title: "Present Simple",
+            minutes: 8,
+            lesson: [
+              "Present Simple odatiy, doimiy yoki takrorlanadigan harakatlar uchun ishlatiladi: I work every day. She plays tennis on Sundays.",
+              "He, she, it bilan fe’lga -s yoki -es qo‘shiladi: she goes, he plays. I, you, we, they bilan fe’l o‘zgarmaydi: they play.",
+              "Inkor: don’t (I, you, we, they) va doesn’t (he, she, it) + asosiy fe’l. He doesn’t like coffee. Doesn’t dan keyin fe’lga -s qo‘shilmaydi.",
+            ],
+            simple:
+              "Har kuni takrorlanadigan ishlar haqida gapirganda Present Simple ishlatamiz. Faqat bitta qoida esda tursin: he, she, it bilan fe’l oxiriga -s qo‘shiladi. Inkor gapda doesn’t allaqachon -s vazifasini bajarib bo‘lgan, shuning uchun fe’l asl holida qoladi.",
+            example: {
+              q: "My brother ___ (watch) TV in the evening.",
+              a: "My brother watches TV in the evening. (watch → watches, chunki -ch bilan tugaydi va -es qo‘shiladi)",
+            },
+            questions: [
+              {
+                q: "She ___ to school every day.",
+                options: ["go", "goes", "going", "is go"],
+                correct: 1,
+                why: "She uchinchi shaxs birlik, shuning uchun fe’lga -es qo‘shiladi: goes.",
+              },
+              {
+                q: "They ___ football on Sundays.",
+                options: ["play", "plays", "playing", "are play"],
+                correct: 0,
+                why: "They ko‘plik, fe’l o‘zgarmaydi: play.",
+              },
+              {
+                q: "He ___ like coffee. (inkor)",
+                options: ["don’t", "doesn’t", "isn’t", "not"],
+                correct: 1,
+                why: "He bilan inkor doesn’t orqali tuziladi: He doesn’t like coffee.",
+              },
+            ],
+          },
+          {
+            id: "past-simple",
+            subject: "ingliz",
+            title: "Past Simple",
+            minutes: 8,
+            lesson: [
+              "Past Simple o‘tmishda tugagan harakatlarni bildiradi: I watched a film yesterday. Vaqt so‘zlari: yesterday, last week, in 2020, ago.",
+              "To‘g‘ri fe’llarga -ed qo‘shiladi: watch → watched, play → played. Noto‘g‘ri fe’llar alohida shakl oladi: go → went, see → saw, have → had.",
+              "Savol va inkorda did / didn’t ishlatiladi va asosiy fe’l asl holiga qaytadi: Did you see the film? I didn’t go.",
+            ],
+            simple:
+              "O‘tmishda bo‘lib o‘tgan va tugagan ishlar uchun Past Simple kerak. To‘g‘ri fe’llarga shunchaki -ed qo‘shasiz. Noto‘g‘ri fe’llarni (go → went) yodlash kerak. Did kelsa, «o‘tmish» belgisi did da bo‘ladi, shuning uchun fe’l oddiy holida qoladi.",
+            example: {
+              q: "Did she ___ (go) to the party?",
+              a: "Did she go to the party? Did dan keyin fe’l asl holida (go), went emas.",
+            },
+            questions: [
+              {
+                q: "Yesterday I ___ a film.",
+                options: ["watch", "watched", "watching", "watches"],
+                correct: 1,
+                why: "Yesterday o‘tmish belgisi. To‘g‘ri fe’l: watch + ed = watched.",
+              },
+              {
+                q: "«go» fe’lining Past Simple shakli qaysi?",
+                options: ["goed", "went", "gone", "going"],
+                correct: 1,
+                why: "Go noto‘g‘ri fe’l: go → went.",
+              },
+              {
+                q: "Did you ___ the film?",
+                options: ["saw", "see", "seen", "seeing"],
+                correct: 1,
+                why: "Did dan keyin fe’l asl holida turadi: Did you see the film?",
+              },
+            ],
+          },
+          {
+            id: "artikl",
+            subject: "ingliz",
+            title: "Artikllar: a, an, the",
+            minutes: 6,
+            lesson: [
+              "A va an noaniq artikllar: «bir», «biror». Undosh tovush bilan boshlansa a (a book), unli tovush bilan boshlansa an (an apple, an engineer).",
+              "The aniq artikl: gapiruvchi ham, tinglovchi ham qaysi narsa haqida gap ketayotganini biladi. Yagona narsalar bilan ham the ishlatiladi: the sun, the moon.",
+              "Tovushga qarang, harfga emas: an hour (h aytilmaydi), a university (y tovushi bilan boshlanadi).",
+            ],
+            simple:
+              "A / an «biror narsa» demak, the esa «o‘sha aniq narsa» demak. A yoki an ni tanlash oson: so‘z unli tovush bilan boshlansa an deb o‘qish yoqimliroq, shuning uchun an apple, a banana.",
+            example: {
+              q: "I saw ___ dog. ___ dog was very big.",
+              a: "I saw a dog. The dog was very big. Birinchi marta «biror it», ikkinchi marta «o‘sha it».",
+            },
+            questions: [
+              {
+                q: "___ apple",
+                options: ["a", "an", "the", "artiklsiz"],
+                correct: 1,
+                why: "Apple unli tovush bilan boshlanadi, shuning uchun an apple.",
+              },
+              {
+                q: "She is ___ engineer.",
+                options: ["a", "an", "the", "artiklsiz"],
+                correct: 1,
+                why: "Engineer unli tovush (e) bilan boshlanadi: an engineer.",
+              },
+              {
+                q: "___ sun is hot.",
+                options: ["A", "An", "The", "artiklsiz"],
+                correct: 2,
+                why: "Quyosh yagona, shuning uchun aniq artikl the ishlatiladi: The sun is hot.",
+              },
+            ],
+          },
+          {
+            id: "algoritm",
+            subject: "info",
+            title: "Algoritm tushunchasi",
+            minutes: 7,
+            lesson: [
+              "Algoritm masalani yechish uchun aniq tartibda bajariladigan qadamlar ketma-ketligi. Choy damlash, yo‘l topish yoki sonlarni saralash ham algoritm.",
+              "Algoritmning asosiy xossalari: aniqlik (har qadam tushunarli), cheklilik (tugaydi), natijaviylik (javob beradi), ommaviylik (bir turdagi barcha masalalar uchun ishlaydi).",
+              "Algoritm blok-sxema bilan chiziladi: oval boshlanish va tugash, to‘rtburchak amal, romb shart (ha / yo‘q).",
+            ],
+            simple:
+              "Algoritm bu retsept: nima ketidan nima qilinishi aniq yozilgan. Kompyuter o‘zi o‘ylay olmaydi, shuning uchun unga har qadamni juda aniq aytish kerak. Blok-sxema esa o‘sha retseptning rasmdagi ko‘rinishi.",
+            example: {
+              q: "Ikki sondan kattasini topish algoritmini yozing.",
+              a: "1) A va B ni kiriting. 2) Agar A > B bo‘lsa, javob A. 3) Aks holda javob B. 4) Javobni chiqaring. (2-qadam romb bilan chiziladi.)",
+            },
+            questions: [
+              {
+                q: "Algoritm nima?",
+                options: [
+                  "Masalani yechish uchun aniq ketma-ket bajariladigan qadamlar",
+                  "Kompyuter turi",
+                  "Dasturlash tili",
+                  "Internet tezligi",
+                ],
+                correct: 0,
+                why: "Algoritm masalani yechishning aniq, ketma-ket qadamlaridir.",
+              },
+              {
+                q: "Quyidagilardan qaysi biri algoritmning xossasi emas?",
+                options: [
+                  "Aniqlik",
+                  "Cheklilik",
+                  "Tasodifiylik",
+                  "Natijaviylik",
+                ],
+                correct: 2,
+                why: "Algoritm har safar bir xil aniq natija berishi kerak, tasodifiylik uning xossasi emas.",
+              },
+              {
+                q: "Blok-sxemada shart (tanlov) qaysi shakl bilan ko‘rsatiladi?",
+                options: ["To‘g‘ri to‘rtburchak", "Romb", "Oval", "Doira"],
+                correct: 1,
+                why: "Shart rombda yoziladi va undan ikki yo‘l (ha / yo‘q) chiqadi.",
+              },
+            ],
+          },
+          {
+            id: "ikkilik",
+            subject: "info",
+            title: "Ikkilik sanoq tizimi",
+            minutes: 9,
+            lesson: [
+              "Kompyuter faqat ikki belgi bilan ishlaydi: 0 va 1. Bu ikkilik sanoq tizimi.",
+              "Ikkilik sonning har bir o‘rni 2 ning darajasi: o‘ngdan chapga 1, 2, 4, 8, 16... 101₂ = 1·4 + 0·2 + 1·1 = 5.",
+              "O‘nlikdan ikkilikka o‘tkazish uchun sonni 2 ga bo‘lib, qoldiqlarni pastdan tepaga o‘qiymiz. 7 = 111₂, 8 = 1000₂.",
+            ],
+            simple:
+              "Biz o‘nta raqam bilan sanaymiz, kompyuter esa faqat ikkita: 0 va 1 (o‘chiq va yoniq lampochka). Har bir o‘rin chapga o‘tgan sari qiymati ikki barobar oshadi: 1, 2, 4, 8... Birlar turgan o‘rinlarning qiymatini qo‘shsangiz, oddiy sonni olasiz.",
+            example: {
+              q: "1101₂ ni o‘nlik tizimga o‘tkazing.",
+              a: "1·8 + 1·4 + 0·2 + 1·1 = 13.",
+            },
+            questions: [
+              {
+                q: "101 (ikkilik) o‘nlik tizimda nechaga teng?",
+                options: ["3", "5", "6", "101"],
+                correct: 1,
+                why: "1·4 + 0·2 + 1·1 = 5.",
+              },
+              {
+                q: "1000 (ikkilik) o‘nlik tizimda nechaga teng?",
+                options: ["4", "6", "8", "10"],
+                correct: 2,
+                why: "Faqat chapdagi o‘rinda 1 bor va uning qiymati 8.",
+              },
+              {
+                q: "7 sonining ikkilik yozuvi qaysi?",
+                options: ["101", "110", "111", "1000"],
+                correct: 2,
+                why: "7 = 4 + 2 + 1, ya’ni 111.",
+              },
+            ],
+          },
+          {
+            id: "xavfsizlik",
+            subject: "info",
+            title: "Internet xavfsizligi",
+            minutes: 7,
+            lesson: [
+              "Kuchli parol uzun bo‘ladi (kamida 12 belgi) va katta-kichik harf, raqam, belgilarni aralash ishlatadi. Ism, tug‘ilgan sana va 12345678 kabi parollar tez topiladi.",
+              "Fishing (phishing) bu soxta xabar yoki sayt orqali parol va karta ma’lumotlarini olishga urinish. Bank nomidan kelgan shubhali havolani bosmang, rasmiy ilova yoki saytga o‘zingiz kiring.",
+              "Ikki bosqichli autentifikatsiya parolga qo‘shimcha kod talab qiladi. Parol o‘g‘irlansa ham, hisobga kirish qiyin bo‘ladi.",
+            ],
+            simple:
+              "Parol uyingiz kaliti, fishing esa kalitingizni aldab olmoqchi bo‘lgan firibgar. Hech qachon parolingizni boshqaga aytmang va shubhali havolani bosmang. Ikki bosqichli himoya esa eshikka ikkinchi qulf qo‘yish bilan barobar.",
+            example: {
+              q: "Qaysi parol yaxshiroq: «Ali2010» yoki «Q8!mTz4#pL2v»?",
+              a: "Ikkinchisi: u uzun, belgi va raqamlarni aralash ishlatadi, ism va yil esa osongina topiladi.",
+            },
+            questions: [
+              {
+                q: "Qaysi parol eng kuchli?",
+                options: ["12345678", "parol", "qwerty", "T7#kLm92@vQp"],
+                correct: 3,
+                why: "U uzun, harf, raqam va belgilarni aralash ishlatadi. Qolganlari juda tez topiladi.",
+              },
+              {
+                q: "Bank nomidan «hisobingiz bloklandi, havolani bosing» degan xabar keldi. Nima qilasiz?",
+                options: [
+                  "Havolani bosib kodni kiritaman",
+                  "Rasmiy ilova yoki sayt orqali o‘zim tekshiraman",
+                  "Do‘stlarimga yuboraman",
+                  "Parolni javob sifatida yuboraman",
+                ],
+                correct: 1,
+                why: "Bu fishing belgisi. Havolani bosmasdan, banklarning rasmiy ilovasidan tekshiring.",
+              },
+              {
+                q: "Ikki bosqichli autentifikatsiya nima beradi?",
+                options: [
+                  "Qo‘shimcha himoya qatlami",
+                  "Internetni tezlashtiradi",
+                  "Parolni avtomatik o‘zgartiradi",
+                  "Reklamani o‘chiradi",
+                ],
+                correct: 0,
+                why: "Parol bilinib qolsa ham, ikkinchi kod bo‘lmasa hisobga kirib bo‘lmaydi.",
+              },
+            ],
+          },
+        ];
+        const TOPIC_BY_ID = {};
+        TOPICS.forEach((t) => (TOPIC_BY_ID[t.id] = t));
+        const SUBJ_BY_ID = {};
+        SUBJECTS.forEach((s) => (SUBJ_BY_ID[s.id] = s));
+
+        /* ================= YORDAMCHILAR ================= */
+        const DAY = 864e5;
+        const $ = (s, r) => (r || document).querySelector(s);
+        const esc = (s) =>
+          String(s).replace(
+            /[&<>"']/g,
+            (c) =>
+              ({
+                "&": "&amp;",
+                "<": "&lt;",
+                ">": "&gt;",
+                '"': "&quot;",
+                "'": "&#39;",
+              })[c],
+          );
+        const LS = {
+          get(k, f) {
+            try {
+              const v = localStorage.getItem(k);
+              return v ? JSON.parse(v) : f;
+            } catch (e) {
+              return f;
+            }
+          },
+          set(k, v) {
+            try {
+              localStorage.setItem(k, JSON.stringify(v));
+            } catch (e) {
+              /* xotira yopiq bo‘lsa, sahifa baribir ishlaydi */
+            }
+          },
+        };
+        const shuffle = (a) => {
+          for (let i = a.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [a[i], a[j]] = [a[j], a[i]];
+          }
+          return a;
+        };
+        const WD = [
+          "Yakshanba",
+          "Dushanba",
+          "Seshanba",
+          "Chorshanba",
+          "Payshanba",
+          "Juma",
+          "Shanba",
+        ];
+        const MO = [
+          "yanvar",
+          "fevral",
+          "mart",
+          "aprel",
+          "may",
+          "iyun",
+          "iyul",
+          "avgust",
+          "sentabr",
+          "oktabr",
+          "noyabr",
+          "dekabr",
+        ];
+        const dateLabel = () => {
+          const d = new Date();
+          return WD[d.getDay()] + ", " + d.getDate() + " " + MO[d.getMonth()];
+        };
+        const shortDate = (ts) => {
+          const d = new Date(ts);
+          return d.getDate() + "." + String(d.getMonth() + 1).padStart(2, "0");
+        };
+        const dayKey = (ts) => {
+          const d = new Date(ts);
+          return d.getFullYear() + "-" + d.getMonth() + "-" + d.getDate();
+        };
+        const LETTERS = ["A", "B", "C", "D"];
+        const ICONS = {
+          bosh: "M3 11l9-8 9 8v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z",
+          darslar: "M4 5a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2zM4 19V5M9 7h6",
+          testlar:
+            "M9 4h6v3H9zM7 5H5a1 1 0 0 0-1 1v14a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1V6a1 1 0 0 0-1-1h-2M8.5 13.5l2.5 2.5 4.5-5",
+          natijalar: "M4 20V4M4 20h16M8 16v-5M12 16V8M16 16v-8",
+          tutor:
+            "M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9zM18 16l.8 2.2L21 19l-2.2.8L18 22l-.8-2.2L15 19l2.2-.8z",
+          profil: "M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM4 21a8 8 0 0 1 16 0",
+        };
+        const NAV = [
+          { h: "bosh", t: "Bosh sahifa", s: "Bosh" },
+          { h: "darslar", t: "Darslar", s: "Darslar" },
+          { h: "testlar", t: "Testlar", s: "Testlar" },
+          { h: "natijalar", t: "Natijalar", s: "Natija" },
+          { h: "tutor", t: "AI Tutor", s: "AI" },
+          { h: "profil", t: "Profil", s: "Profil" },
+        ];
+
+        /* ================= HOLAT ================= */
+        function demoState() {
+          const now = Date.now();
+          const s = (d, kind, items) => {
+            const right = items.reduce((x, i) => x + i.right, 0),
+              total = items.reduce((x, i) => x + i.total, 0);
+            return {
+              ts: now - d * DAY - 36e5,
+              kind,
+              items,
+              right,
+              total,
+              wrong: [],
+            };
+          };
+          const it = (topicId, right, total) => ({ topicId, right, total });
+          return {
+            demo: true,
+            profile: { name: "", grade: 8, weeklyGoal: 4, focus: "math" },
+            learned: {
+              kasrlar: now - 6 * DAY,
+              tenglamalar: now - 4 * DAY,
+              tezlik: now - 2 * DAY,
+              "present-simple": now - 1 * DAY,
+              ikkilik: now - 3 * 36e5,
+            },
+            sessions: [
+              s(9, "topic", [it("kasrlar", 1, 3)]),
+              s(7, "topic", [it("kasrlar", 2, 3)]),
+              s(5, "topic", [it("tenglamalar", 3, 3)]),
+              s(4, "topic", [it("foiz", 1, 3)]),
+              s(2, "topic", [it("tezlik", 2, 3)]),
+              s(1, "topic", [it("present-simple", 3, 3)]),
+              s(0, "topic", [it("ikkilik", 2, 3)]),
+            ],
+          };
+        }
+        let S = LS.get("smartedu.v1", null);
+        if (!S || !S.profile || !Array.isArray(S.sessions)) S = demoState();
+        const save = () => LS.set("smartedu.v1", S);
+        let chat = LS.get("smartedu.chat", []);
+        if (!Array.isArray(chat)) chat = [];
+        const saveChat = () => LS.set("smartedu.chat", chat.slice(-30));
+
+        function leaveDemo() {
+          if (S.demo) {
+            S.sessions = [];
+            S.learned = {};
+            S.demo = false;
+          }
+        }
+
+        function topicItems(id) {
+          const out = [];
+          S.sessions.forEach((s) =>
+            s.items.forEach((i) => {
+              if (i.topicId === id)
+                out.push({ ts: s.ts, right: i.right, total: i.total });
+            }),
+          );
+          out.sort((a, b) => a.ts - b.ts);
+          return out.slice(-3);
+        }
+        function mastery(id) {
+          const a = topicItems(id);
+          if (!a.length) return null;
+          const t = a.reduce((x, i) => x + i.total, 0);
+          return t
+            ? Math.round((100 * a.reduce((x, i) => x + i.right, 0)) / t)
+            : null;
+        }
+        function levelOf(p) {
+          if (p == null) return { t: "Boshlanmagan", k: "none" };
+          if (p < 50) return { t: "Mustahkamlash kerak", k: "low" };
+          if (p < 80) return { t: "O‘rta daraja", k: "mid" };
+          return { t: "Yaxshi o‘zlashtirilgan", k: "high" };
+        }
+        function subjectMastery(sid) {
+          const v = TOPICS.filter((t) => t.subject === sid)
+            .map((t) => mastery(t.id))
+            .filter((x) => x != null);
+          return v.length
+            ? Math.round(v.reduce((a, b) => a + b, 0) / v.length)
+            : null;
+        }
+        function avgScore() {
+          const t = S.sessions.reduce((x, s) => x + s.total, 0);
+          return t
+            ? Math.round(
+                (100 * S.sessions.reduce((x, s) => x + s.right, 0)) / t,
+              )
+            : null;
+        }
+        function weekStart() {
+          const d = new Date();
+          d.setHours(0, 0, 0, 0);
+          return d.getTime() - ((d.getDay() + 6) % 7) * DAY;
+        }
+        function learnedThisWeek() {
+          const w = weekStart();
+          return Object.values(S.learned).filter((ts) => ts >= w).length;
+        }
+        function streak() {
+          const days = new Set();
+          S.sessions.forEach((s) => days.add(dayKey(s.ts)));
+          Object.values(S.learned).forEach((ts) => days.add(dayKey(ts)));
+          let n = 0,
+            t = Date.now();
+          if (!days.has(dayKey(t))) t -= DAY;
+          while (days.has(dayKey(t))) {
+            n++;
+            t -= DAY;
+          }
+          return n;
+        }
+        // Tavsiya: avval zaif (80% dan past) mavzular, keyin boshlanmaganlari, keyin qolganlari
+        function recommend() {
+          const pri = (t) => {
+            const m = mastery(t.id);
+            if (m != null && m < 80) return [0, m];
+            if (m == null && !S.learned[t.id]) return [1, 0];
+            if (m == null) return [2, 0];
+            return [3, m];
+          };
+          return TOPICS.slice().sort((a, b) => {
+            const x = pri(a),
+              y = pri(b);
+            return x[0] - y[0] || x[1] - y[1];
+          });
+        }
+        function reasonFor(t) {
+          const m = mastery(t.id);
+          if (m != null && m < 80)
+            return (
+              "Oxirgi natijangiz " +
+              m +
+              "%. Mavzuni mustahkamlash foydali bo‘ladi."
+            );
+          if (m == null && !S.learned[t.id])
+            return "Bu mavzuni hali boshlamadingiz.";
+          if (m == null)
+            return "Mavzuni o‘rgandingiz, endi test bilan tekshirib ko‘ring.";
+          return "Yaxshi natija. Bilimni qayta tekshirib turing.";
+        }
+        function recentWrong(n) {
+          const out = [];
+          const ss = S.sessions.slice().sort((a, b) => b.ts - a.ts);
+          for (const s of ss)
+            for (const w of s.wrong || []) {
+              if (out.length < n) out.push(w);
+            }
+          return out;
+        }
+
+        /* ================= AI ================= */
+        let provP = null;
+        function getProvider() {
+          if (provP) return provP;
+          provP = (async () => {
+            try {
+              if (window.claude && window.claude.use) {
+                const s = await window.claude.use("sample");
+                if (s) return { kind: "claude", fn: s };
+              }
+            } catch (e) {
+              /* Claude muhitida emas */
+            }
+            if (CONFIG.AI_ENDPOINT && /^https?:/.test(location.protocol))
+              return { kind: "endpoint" };
+            return null;
+          })();
+          return provP;
+        }
+        async function callAI(prov, system, msgs, opt) {
+          opt = opt || {};
+          if (prov.kind === "claude") {
+            const turns = (
+              system ? [{ role: "user", content: system }] : []
+            ).concat(msgs);
+            const r = await prov.fn(turns, {
+              cache: false,
+              signal: opt.signal,
+              onText: (u) => opt.onText && opt.onText(u.text),
+            });
+            return r.text;
+          }
+          const res = await fetch(CONFIG.AI_ENDPOINT, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ system: system || "", messages: msgs }),
+            signal: opt.signal,
+          });
+          if (!res.ok) throw { code: "http_" + res.status };
+          const j = await res.json();
+          if (!j || typeof j.text !== "string") throw { code: "bad_reply" };
+          if (opt.onText) opt.onText(j.text);
+          return j.text;
+        }
+        function buildSystem(topic) {
+          const p = S.profile;
+          let s =
+            "Sen SmartEdu o‘quv platformasining AI Tutorisan. O‘quvchi: " +
+            (p.name || "noma’lum") +
+            ", " +
+            p.grade +
+            "-sinf.\n" +
+            "Qoidalar: faqat o‘zbek tilida (lotin yozuvida) javob ber. Sodda, do‘stona va qisqa yoz (odatda 120 so‘zdan oshirma). " +
+            "Murakkab tushunchani kundalik hayotdagi misol bilan tushuntir. Mashq yechtirishda javobni darhol berma, avval yo‘naltiruvchi savol ber. " +
+            'Oxirida bitta qisqa tekshiruv savoli ber. Matematik ifodalarni oddiy matn bilan yoz. Faqat **qalin** va "- " ro‘yxatdan foydalan.\n';
+          if (topic) {
+            const m = mastery(topic.id);
+            s +=
+              "\nJoriy mavzu: " +
+              topic.title +
+              " (" +
+              SUBJ_BY_ID[topic.subject].name +
+              "). O‘quvchining bu mavzudagi natijasi: " +
+              (m == null ? "hali test topshirmagan" : m + "%") +
+              ".\n" +
+              "Dars matni:\n" +
+              topic.lesson.join("\n") +
+              "\n";
+          }
+          const w = recentWrong(4);
+          if (w.length) {
+            s +=
+              "\nO‘quvchi yaqinda quyidagi savollarda xato qilgan:\n" +
+              w
+                .map((x) => {
+                  const t = TOPIC_BY_ID[x.topicId],
+                    q = t && t.questions[x.qi];
+                  return q ? "- " + q.q : "";
+                })
+                .filter(Boolean)
+                .join("\n") +
+              "\n";
+          }
+          return s;
+        }
+        function parseJSONLoose(txt) {
+          try {
+            return JSON.parse(txt);
+          } catch (e) {
+            /* davom etamiz */
+          }
+          const m = String(txt).match(/\[[\s\S]*\]/);
+          if (m) {
+            try {
+              return JSON.parse(m[0]);
+            } catch (e) {
+              /* davom etamiz */
+            }
+          }
+          return null;
+        }
+
+        // Oflayn tutor: dars materiallari asosida javob beradi
+        const tutor = {
+          topic: "",
+          pendingQ: null,
+          lastWrong: [],
+          busy: false,
+          ctl: null,
+          pending: null,
+        };
+        function bestTopicMatch(text) {
+          const words = text
+            .toLowerCase()
+            .split(/[^a-zа-яʻ‘’'0-9]+/)
+            .filter((w) => w.length >= 4);
+          let best = null,
+            score = 0;
+          TOPICS.forEach((t) => {
+            const hay = (
+              t.title +
+              " " +
+              t.lesson.join(" ") +
+              " " +
+              t.simple
+            ).toLowerCase();
+            const sc = words.reduce((x, w) => x + (hay.includes(w) ? 1 : 0), 0);
+            if (sc > score) {
+              score = sc;
+              best = t;
+            }
+          });
+          return best;
+        }
+        function localTutor(text, topic) {
+          const t = text.toLowerCase().trim();
+          if (tutor.pendingQ && /^[a-d]\b/.test(t)) {
+            const q = tutor.pendingQ;
+            tutor.pendingQ = null;
+            const idx = LETTERS.indexOf(t[0].toUpperCase());
+            return (
+              (idx === q.correct
+                ? "**To‘g‘ri!** "
+                : "**Deyarli.** To‘g‘ri javob: " +
+                  LETTERS[q.correct] +
+                  ") " +
+                  q.options[q.correct] +
+                  ". ") + q.why
+            );
+          }
+          if (/xato/.test(t) && tutor.lastWrong.length) {
+            return tutor.lastWrong
+              .slice(0, 4)
+              .map((w) => {
+                const q = TOPIC_BY_ID[w.topicId].questions[w.qi];
+                return (
+                  "**" +
+                  q.q +
+                  "**\nTo‘g‘ri javob: " +
+                  q.options[q.correct] +
+                  ". " +
+                  q.why
+                );
+              })
+              .join("\n\n");
+          }
+          const tp = topic || bestTopicMatch(text);
+          if (!tp)
+            return "Hozir AI serveri ulanmagan, shuning uchun men faqat dars materiallari asosida javob bera olaman. Yuqoridan mavzuni tanlang yoki savolingizda mavzu nomini yozing (masalan, «kasrlar» yoki «Nyuton qonunlari»).";
+          if (/misol/.test(t))
+            return (
+              "**" +
+              tp.title +
+              "** bo‘yicha misol:\n\n" +
+              tp.example.q +
+              "\n\n" +
+              tp.example.a
+            );
+          if (/tekshir|savol ber|test/.test(t)) {
+            const q =
+              tp.questions[Math.floor(Math.random() * tp.questions.length)];
+            tutor.pendingQ = q;
+            return (
+              "**" +
+              q.q +
+              "**\n\n" +
+              q.options.map((o, i) => "- " + LETTERS[i] + ") " + o).join("\n") +
+              "\n\nJavob harfini yozing (A, B, C yoki D)."
+            );
+          }
+          return (
+            "**" +
+            tp.title +
+            "** haqida sodda qilib:\n\n" +
+            tp.simple +
+            "\n\nMisol: " +
+            tp.example.q +
+            " " +
+            tp.example.a +
+            "\n\nTushundingizmi? «Meni tekshir» deb yozing, men savol beraman."
+          );
+        }
+        function goTutor(topicId, prompt) {
+          if (topicId !== undefined && topicId !== null) tutor.topic = topicId;
+          tutor.pending = prompt || null;
+          if (location.hash === "#tutor") render();
+          else location.hash = "#tutor";
+        }
+
+        /* ================= MATN FORMATLASH ================= */
+        function inl(s) {
+          return s
+            .replace(/\*\*(.+?)\*\*/g, "<b>$1</b>")
+            .replace(/`([^`]+)`/g, "<code>$1</code>");
+        }
+        function fmt(text) {
+          return String(text)
+            .split(/\n\s*\n/)
+            .map((par) => {
+              const lines = esc(par).split("\n");
+              if (lines.every((l) => /^\s*[-•]\s+/.test(l)))
+                return (
+                  "<ul>" +
+                  lines
+                    .map(
+                      (l) =>
+                        "<li>" + inl(l.replace(/^\s*[-•]\s+/, "")) + "</li>",
+                    )
+                    .join("") +
+                  "</ul>"
+                );
+              return "<p>" + lines.map(inl).join("<br>") + "</p>";
+            })
+            .join("");
+        }
+
+        /* ================= KO‘RINISHLAR ================= */
+        const subjName = (id) => SUBJ_BY_ID[id].name;
+        const pillFor = (p) => {
+          const l = levelOf(p);
+          return (
+            '<span class="pill ' +
+            l.k +
+            '">' +
+            l.t +
+            (p != null ? " · " + p + "%" : "") +
+            "</span>"
+          );
+        };
+        const bar = (p, c) =>
+          '<div class="bar" role="img" aria-label="' +
+          (p == null ? "ma’lumot yo‘q" : p + " foiz") +
+          '"><i style="width:' +
+          (p || 0) +
+          "%;--c:" +
+          (c || "var(--accent)") +
+          '"></i></div>';
+        const demoBanner = () =>
+          '<div class="banner"><span><b>Namunaviy ma’lumotlar.</b> Hozir ko‘rayotgan natijalaringiz misol uchun qo‘yilgan. Birinchi testni topshirganingizda ular o‘rniga o‘zingizniki yoziladi.</span><button class="btn small" data-act="clear-demo" type="button">Namunani tozalash</button></div>';
+
+        const practice = { status: "idle", items: [], err: "" };
+
+        function viewHome() {
+          const nx = recommend()[0];
+          const learnedN = Object.keys(S.learned).length,
+            wk = learnedThisWeek(),
+            goal = S.profile.weeklyGoal;
+          const avg = avgScore(),
+            st = streak();
+          const hasDiag = S.sessions.some((s) => s.kind === "diag");
+          return (
+            (S.demo ? demoBanner() : "") +
+            '<section class="hero"><p class="eyebrow">' +
+            dateLabel() +
+            "</p>" +
+            '<h1>Salom, <span class="mk">' +
+            esc(S.profile.name || "o‘quvchi") +
+            "</span></h1>" +
+            '<p class="lead">' +
+            (st ? st + " kunlik ketma-ketlik. " : "") +
+            "Bugun qaysi mavzu bilan davom etamiz?</p></section>" +
+            '<section class="card next"><div class="stack" style="gap:8px"><p class="eyebrow">Keyingi qadam · ' +
+            esc(subjName(nx.subject)) +
+            "</p>" +
+            "<h2>" +
+            esc(nx.title) +
+            '</h2><p class="muted">' +
+            esc(reasonFor(nx)) +
+            "</p></div>" +
+            '<div class="row"><a class="btn" href="#dars-' +
+            nx.id +
+            '">Darsni ochish</a><a class="btn primary" href="#test-' +
+            nx.id +
+            '">Testni boshlash</a></div></section>' +
+            (hasDiag
+              ? ""
+              : '<section class="card flat row between"><div><h3>Bilim darajangizni aniqlang</h3><p class="muted">12 ta savol, har mavzudan bittadan. Natijaga qarab o‘quv rejangiz tuziladi.</p></div><a class="btn primary" href="#test-diagnostika">Diagnostika</a></section>') +
+            '<section class="card strip">' +
+            '<div><span class="eyebrow">Haftalik maqsad</span><span class="big">' +
+            wk +
+            " / " +
+            goal +
+            "</span>" +
+            bar(Math.min(100, Math.round((100 * wk) / goal))) +
+            '<span class="note">shu hafta o‘rganilgan mavzular</span></div>' +
+            '<div><span class="eyebrow">O‘rganilgan mavzular</span><span class="big">' +
+            learnedN +
+            " / " +
+            TOPICS.length +
+            "</span>" +
+            bar(Math.round((100 * learnedN) / TOPICS.length)) +
+            '<span class="note">darsni «o‘rgandim» deb belgilaganlar</span></div>' +
+            '<div><span class="eyebrow">O‘rtacha natija</span><span class="big">' +
+            (avg == null ? "—" : avg + "%") +
+            "</span>" +
+            bar(avg) +
+            '<span class="note">barcha testlar bo‘yicha</span></div></section>' +
+            '<section class="card"><div class="row between" style="margin-bottom:6px"><h2>Fanlar bo‘yicha o‘zlashtirish</h2><a class="btn small" href="#natijalar">Batafsil</a></div>' +
+            SUBJECTS.map((s) => {
+              const m = subjectMastery(s.id),
+                n = TOPICS.filter(
+                  (t) => t.subject === s.id && S.learned[t.id],
+                ).length,
+                tot = TOPICS.filter((t) => t.subject === s.id).length;
+              return (
+                '<div class="subj"><div class="name"><span class="dot" style="--c:' +
+                s.c +
+                '"></span>' +
+                s.name +
+                "</div>" +
+                bar(m, s.c) +
+                '<span class="mono muted" style="text-align:right">' +
+                (m == null ? n + "/" + tot : m + "%") +
+                "</span></div>"
+              );
+            }).join("") +
+            "</section>" +
+            '<section class="card" id="practice">' +
+            practiceHTML() +
+            "</section>"
+          );
+        }
+        function practiceHTML() {
+          const head =
+            '<div class="row between"><div><h2>Sizga mos mashqlar</h2><p class="muted">AI zaif mavzularingizga qarab yangi mashqlar tuzadi.</p></div>' +
+            '<button class="btn primary" data-act="practice" type="button"' +
+            (practice.status === "loading" ? " disabled" : "") +
+            ">" +
+            (practice.items.length ? "Yangilarini tuz" : "Menga mashq tuz") +
+            "</button></div>";
+          if (practice.status === "loading")
+            return (
+              head +
+              '<p class="muted dots" style="margin-top:14px"><span></span><span></span><span></span> Mashqlar tayyorlanmoqda</p>'
+            );
+          if (practice.status === "error")
+            return (
+              head +
+              '<p class="note" style="margin-top:14px">' +
+              esc(practice.err) +
+              "</p>"
+            );
+          if (!practice.items.length) return head;
+          return (
+            head +
+            '<div style="margin-top:8px">' +
+            practice.items
+              .map(
+                (it) =>
+                  '<div class="practice-item fade"><p class="eyebrow">' +
+                  esc(it.topic || "") +
+                  '</p><p style="margin:4px 0 8px;font-weight:500">' +
+                  esc(it.q) +
+                  "</p>" +
+                  (it.hint
+                    ? '<details><summary>Maslahat</summary><p class="muted">' +
+                      esc(it.hint) +
+                      "</p></details>"
+                    : "") +
+                  "<details><summary>Javobni ko‘rish</summary><p>" +
+                  esc(it.answer) +
+                  "</p></details></div>",
+              )
+              .join("") +
+            "</div>"
+          );
+        }
+        async function makePractice() {
+          if (practice.status === "loading") return;
+          practice.status = "loading";
+          practice.err = "";
+          refreshPractice();
+          const weak = recommend().slice(0, 3);
+          const prov = await getProvider();
+          const local = () =>
+            weak.map((t) => {
+              const q =
+                t.questions[Math.floor(Math.random() * t.questions.length)];
+              return {
+                topic: t.title,
+                q:
+                  q.q +
+                  "  " +
+                  q.options.map((o, i) => LETTERS[i] + ") " + o).join("   "),
+                hint: "",
+                answer:
+                  LETTERS[q.correct] +
+                  ") " +
+                  q.options[q.correct] +
+                  ". " +
+                  q.why,
+              };
+            });
+          if (!prov) {
+            practice.items = local();
+            practice.status = "ready";
+            refreshPractice();
+            return;
+          }
+          const prompt =
+            "O‘quvchi: " +
+            (S.profile.name || "noma’lum") +
+            ", " +
+            S.profile.grade +
+            "-sinf.\nUning e’tibor talab qiladigan mavzulari:\n" +
+            weak
+              .map(
+                (t) =>
+                  "- " +
+                  t.title +
+                  " (" +
+                  subjName(t.subject) +
+                  "), natija: " +
+                  (mastery(t.id) == null
+                    ? "testdan o‘tmagan"
+                    : mastery(t.id) + "%"),
+              )
+              .join("\n") +
+            "\n\nShu mavzular bo‘yicha jami 3 ta yangi mashq tuz (har mavzudan bittadan). O‘zbek tilida (lotin) yoz. " +
+            'Faqat JSON massiv qaytar, boshqa matn qo‘shma: [{"topic":"mavzu nomi","q":"mashq sharti","hint":"qisqa maslahat","answer":"to‘g‘ri javob va bir jumlali izoh"}]';
+          try {
+            const txt = await callAI(prov, "", [
+              { role: "user", content: prompt },
+            ]);
+            const arr = parseJSONLoose(txt);
+            if (!Array.isArray(arr) || !arr.length) throw { code: "bad_json" };
+            practice.items = arr
+              .slice(0, 3)
+              .map((x) => ({
+                topic: String(x.topic || ""),
+                q: String(x.q || ""),
+                hint: String(x.hint || ""),
+                answer: String(x.answer || ""),
+              }))
+              .filter((x) => x.q);
+            practice.status = "ready";
+          } catch (e) {
+            practice.items = local();
+            practice.status = "ready";
+            practice.err = "";
+          }
+          refreshPractice();
+        }
+        function refreshPractice() {
+          const el = $("#practice");
+          if (el) el.innerHTML = practiceHTML();
+        }
+
+        let lessonFilter = "all";
+        function viewLessons() {
+          const list = TOPICS.filter(
+            (t) => lessonFilter === "all" || t.subject === lessonFilter,
+          );
+          return (
+            '<section class="hero"><p class="eyebrow">Darslar</p><h1>Fanlar va <span class="mk">mavzular</span></h1><p class="lead">Mavzuni tanlang, o‘qing va oxirida test bilan tekshiring.</p></section>' +
+            '<div class="chips" role="group" aria-label="Fan bo‘yicha saralash">' +
+            [{ id: "all", name: "Hammasi" }]
+              .concat(SUBJECTS)
+              .map(
+                (s) =>
+                  '<button class="chip" type="button" data-act="filter" data-id="' +
+                  s.id +
+                  '" aria-pressed="' +
+                  (lessonFilter === s.id) +
+                  '">' +
+                  s.name +
+                  "</button>",
+              )
+              .join("") +
+            "</div>" +
+            '<div class="topics">' +
+            list
+              .map((t) => {
+                const m = mastery(t.id),
+                  s = SUBJ_BY_ID[t.subject];
+                return (
+                  '<a class="card topic" href="#dars-' +
+                  t.id +
+                  '" style="--c:' +
+                  s.c +
+                  '"><p class="eyebrow">' +
+                  s.name +
+                  '</p><span class="t">' +
+                  esc(t.title) +
+                  "</span>" +
+                  '<div class="meta"><span class="pill">' +
+                  t.minutes +
+                  " daqiqa</span>" +
+                  (S.learned[t.id]
+                    ? '<span class="pill high">O‘rganilgan</span>'
+                    : "") +
+                  (m != null ? pillFor(m) : "") +
+                  "</div></a>"
+                );
+              })
+              .join("") +
+            "</div>"
+          );
+        }
+        function viewLesson(id) {
+          const t = TOPIC_BY_ID[id];
+          if (!t) return notFound();
+          const s = SUBJ_BY_ID[t.subject],
+            m = mastery(id);
+          const same = TOPICS.filter((x) => x.subject === t.subject),
+            i = same.indexOf(t);
+          const prev = same[i - 1],
+            next = same[i + 1];
+          return (
+            '<a class="crumb" href="#darslar">← DARSLAR / ' +
+            esc(s.name.toUpperCase()) +
+            "</a>" +
+            '<section class="hero"><p class="eyebrow" style="color:' +
+            s.c +
+            '">' +
+            esc(s.name) +
+            " · " +
+            t.minutes +
+            " daqiqa</p><h1>" +
+            esc(t.title) +
+            "</h1>" +
+            '<div class="row" style="margin-top:6px">' +
+            (S.learned[id]
+              ? '<span class="pill high">O‘rganilgan</span>'
+              : "") +
+            (m != null ? pillFor(m) : "") +
+            "</div></section>" +
+            '<section class="card lesson">' +
+            t.lesson.map((p) => "<p>" + esc(p) + "</p>").join("") +
+            '<div class="ex"><p class="eyebrow">Misol</p><p style="margin:4px 0 8px"><b>' +
+            esc(t.example.q) +
+            "</b></p><details><summary>Yechimni ko‘rish</summary><p>" +
+            esc(t.example.a) +
+            "</p></details></div></section>" +
+            '<section class="card flat stack"><h3>Tushunmadingizmi?</h3><p class="muted">AI Tutor shu mavzuni siz uchun yanada sodda qilib tushuntiradi.</p>' +
+            '<div class="row"><button class="btn" type="button" data-act="explain" data-id="' +
+            id +
+            '">AI: sodda qilib tushuntir</button>' +
+            '<button class="btn" type="button" data-act="learned" data-id="' +
+            id +
+            '">' +
+            (S.learned[id]
+              ? "O‘rganilgan deb belgilangan ✓"
+              : "O‘rgandim deb belgilash") +
+            "</button>" +
+            '<a class="btn primary" href="#test-' +
+            id +
+            '">Testni boshlash</a></div></section>' +
+            '<div class="row between">' +
+            (prev
+              ? '<a class="btn small" href="#dars-' +
+                prev.id +
+                '">← ' +
+                esc(prev.title) +
+                "</a>"
+              : "<span></span>") +
+            (next
+              ? '<a class="btn small" href="#dars-' +
+                next.id +
+                '">' +
+                esc(next.title) +
+                " →</a>"
+              : "") +
+            "</div>"
+          );
+        }
+
+        function viewTests() {
+          const weak = recommend().slice(0, 3);
+          return (
+            '<section class="hero"><p class="eyebrow">Testlar</p><h1>Bilimingizni <span class="mk">tekshiring</span></h1><p class="lead">Har mavzuda 3 ta savol. Javobdan keyin darhol izoh ko‘rasiz.</p></section>' +
+            '<div class="grid2"><a class="card topic" href="#test-diagnostika" style="--c:var(--accent)"><p class="eyebrow">Daraja aniqlash</p><span class="t">Diagnostika</span><p class="muted">12 ta savol, har mavzudan bittadan.</p></a>' +
+            '<a class="card topic" href="#test-zaif" style="--c:var(--bad)"><p class="eyebrow">Shaxsiy</p><span class="t">Zaif mavzular testi</span><p class="muted">' +
+            weak.map((t) => esc(t.title)).join(", ") +
+            "</p></a></div>" +
+            SUBJECTS.map(
+              (s) =>
+                '<section class="card"><div class="row" style="margin-bottom:6px"><span class="dot" style="--c:' +
+                s.c +
+                '"></span><h2>' +
+                s.name +
+                "</h2></div>" +
+                TOPICS.filter((t) => t.subject === s.id)
+                  .map(
+                    (t) =>
+                      '<div class="mrow"><span style="font-weight:500">' +
+                      esc(t.title) +
+                      "</span><span>" +
+                      pillFor(mastery(t.id)) +
+                      '</span><a class="btn small" href="#test-' +
+                      t.id +
+                      '">Boshlash</a></div>',
+                  )
+                  .join("") +
+                "</section>",
+            ).join("")
+          );
+        }
+
+        let run = null;
+        function startRun(key) {
+          let qs = [];
+          if (key === "diagnostika")
+            qs = TOPICS.map((t) => ({
+              topicId: t.id,
+              qi: Math.floor(Math.random() * t.questions.length),
+            }));
+          else if (key === "zaif")
+            recommend()
+              .slice(0, 3)
+              .forEach((t) =>
+                t.questions.forEach((_, qi) => qs.push({ topicId: t.id, qi })),
+              );
+          else {
+            const t = TOPIC_BY_ID[key];
+            if (!t) return false;
+            t.questions.forEach((_, qi) => qs.push({ topicId: t.id, qi }));
+          }
+          shuffle(qs);
+          run = { key, qs, i: 0, picked: null, results: [], saved: false };
+          return true;
+        }
+        const runTitle = (k) =>
+          k === "diagnostika"
+            ? "Diagnostika"
+            : k === "zaif"
+              ? "Zaif mavzular testi"
+              : TOPIC_BY_ID[k].title;
+        function viewTest(key) {
+          if (!run || run.key !== key) {
+            if (!startRun(key)) return notFound();
+          }
+          if (run.i >= run.qs.length) return viewResult();
+          const cur = run.qs[run.i],
+            t = TOPIC_BY_ID[cur.topicId],
+            q = t.questions[cur.qi],
+            done = run.picked != null;
+          return (
+            '<a class="crumb" href="#testlar">← TESTLAR</a>' +
+            '<section class="stack"><div class="row between"><p class="eyebrow">' +
+            esc(runTitle(key)) +
+            " · " +
+            esc(t.title) +
+            '</p><span class="mono muted">' +
+            (run.i + 1) +
+            " / " +
+            run.qs.length +
+            "</span></div>" +
+            '<div class="steps">' +
+            run.qs
+              .map(
+                (_, i) =>
+                  '<i class="' +
+                  (i < run.results.length
+                    ? run.results[i].ok
+                      ? "good"
+                      : "bad"
+                    : i === run.i
+                      ? "on"
+                      : "") +
+                  '"></i>',
+              )
+              .join("") +
+            "</div></section>" +
+            '<section class="card stack fade" style="gap:18px"><h2 class="qtext">' +
+            esc(q.q) +
+            '</h2><div class="opts">' +
+            q.options
+              .map((o, i) => {
+                let cls = "opt";
+                if (done) {
+                  if (i === q.correct) cls += " ok";
+                  else if (i === run.picked) cls += " no";
+                }
+                return (
+                  '<button type="button" class="' +
+                  cls +
+                  '" data-act="pick" data-i="' +
+                  i +
+                  '"' +
+                  (done ? " disabled" : "") +
+                  '><span class="k">' +
+                  LETTERS[i] +
+                  "</span><span>" +
+                  esc(o) +
+                  "</span></button>"
+                );
+              })
+              .join("") +
+            "</div>" +
+            (done
+              ? '<div class="why"><b>' +
+                (run.picked === q.correct ? "To‘g‘ri." : "Noto‘g‘ri.") +
+                "</b> " +
+                esc(q.why) +
+                '</div><div><button class="btn primary" type="button" data-act="next">' +
+                (run.i + 1 === run.qs.length
+                  ? "Natijani ko‘rish"
+                  : "Keyingi savol") +
+                "</button></div>"
+              : "") +
+            "</section>"
+          );
+        }
+        function finishRun() {
+          if (run.saved) return;
+          run.saved = true;
+          leaveDemo();
+          const byTopic = {};
+          run.results.forEach((r) => {
+            const b =
+              byTopic[r.topicId] ||
+              (byTopic[r.topicId] = { topicId: r.topicId, right: 0, total: 0 });
+            b.total++;
+            if (r.ok) b.right++;
+          });
+          const items = Object.values(byTopic),
+            right = run.results.filter((r) => r.ok).length;
+          const kind =
+            run.key === "diagnostika"
+              ? "diag"
+              : run.key === "zaif"
+                ? "weak"
+                : "topic";
+          const wrong = run.results
+            .filter((r) => !r.ok)
+            .map((r) => ({ topicId: r.topicId, qi: r.qi }));
+          S.sessions.push({
+            ts: Date.now(),
+            kind,
+            items,
+            right,
+            total: run.results.length,
+            wrong,
+          });
+          save();
+        }
+        function viewResult() {
+          finishRun();
+          const total = run.results.length,
+            right = run.results.filter((r) => r.ok).length,
+            p = Math.round((100 * right) / total);
+          const wrong = run.results.filter((r) => !r.ok),
+            C = 2 * Math.PI * 54;
+          const verdict =
+            p >= 80
+              ? "Ajoyib natija. Mavzu yaxshi o‘zlashtirilgan."
+              : p >= 50
+                ? "Yaxshi boshlanish. Xatolarni ko‘rib chiqing va qayta urinib ko‘ring."
+                : "Mavzuni yana bir bor o‘qib chiqing, keyin testni takrorlang.";
+          const topicIds = Array.from(
+            new Set(run.results.map((r) => r.topicId)),
+          );
+          const nx = recommend()[0];
+          return (
+            '<a class="crumb" href="#testlar">← TESTLAR</a>' +
+            '<section class="card row fade" style="gap:24px"><svg class="ring" viewBox="0 0 132 132" role="img" aria-label="Natija ' +
+            p +
+            ' foiz"><circle class="bg" cx="66" cy="66" r="54"/><circle class="fg" cx="66" cy="66" r="54" stroke-dasharray="' +
+            ((C * p) / 100).toFixed(1) +
+            " " +
+            C.toFixed(1) +
+            '"/><text x="66" y="76">' +
+            p +
+            "%</text></svg>" +
+            '<div class="stack" style="gap:6px;flex:1;min-width:220px"><p class="eyebrow">' +
+            esc(runTitle(run.key)) +
+            "</p><h2>" +
+            right +
+            " / " +
+            total +
+            ' to‘g‘ri</h2><p class="muted">' +
+            verdict +
+            "</p></div></section>" +
+            (topicIds.length > 1
+              ? '<section class="card"><h3 style="margin-bottom:6px">Mavzular bo‘yicha</h3>' +
+                topicIds
+                  .map((id) => {
+                    const rs = run.results.filter((r) => r.topicId === id),
+                      ok = rs.filter((r) => r.ok).length,
+                      pp = Math.round((100 * ok) / rs.length);
+                    return (
+                      '<div class="mrow"><span style="font-weight:500">' +
+                      esc(TOPIC_BY_ID[id].title) +
+                      "</span>" +
+                      bar(pp, SUBJ_BY_ID[TOPIC_BY_ID[id].subject].c) +
+                      '<span class="mono muted" style="text-align:right">' +
+                      ok +
+                      "/" +
+                      rs.length +
+                      "</span></div>"
+                    );
+                  })
+                  .join("") +
+                "</section>"
+              : "") +
+            (wrong.length
+              ? '<section class="card"><h3 style="margin-bottom:4px">Xato qilingan savollar</h3>' +
+                wrong
+                  .map((w) => {
+                    const q = TOPIC_BY_ID[w.topicId].questions[w.qi];
+                    return (
+                      '<div class="wrong"><p style="font-weight:600">' +
+                      esc(q.q) +
+                      '</p><p class="muted">To‘g‘ri javob: <b style="color:var(--good)">' +
+                      esc(q.options[q.correct]) +
+                      "</b>. " +
+                      esc(q.why) +
+                      "</p></div>"
+                    );
+                  })
+                  .join("") +
+                "</section>"
+              : "") +
+            '<div class="row">' +
+            (wrong.length
+              ? '<button class="btn primary" type="button" data-act="explain-wrong">AI: xatolarimni tushuntir</button>'
+              : "") +
+            '<button class="btn" type="button" data-act="retry">Qayta urinish</button><a class="btn" href="#natijalar">Natijalarim</a><a class="btn" href="#dars-' +
+            nx.id +
+            '">Tavsiya: ' +
+            esc(nx.title) +
+            "</a></div>"
+          );
+        }
+
+        function chartSVG(pts) {
+          const W = 640,
+            H = 230,
+            L = 36,
+            R = 16,
+            T = 22,
+            B = 30,
+            iw = W - L - R,
+            ih = H - T - B;
+          const x = (i) =>
+            L + (pts.length === 1 ? iw / 2 : (i * iw) / (pts.length - 1));
+          const y = (v) => T + ih - (v / 100) * ih;
+          let g = "";
+          [0, 25, 50, 75, 100].forEach((v) => {
+            g +=
+              '<line class="gl" x1="' +
+              L +
+              '" x2="' +
+              (W - R) +
+              '" y1="' +
+              y(v) +
+              '" y2="' +
+              y(v) +
+              '"/><text class="ax" x="' +
+              (L - 6) +
+              '" y="' +
+              (y(v) + 4) +
+              '" text-anchor="end">' +
+              v +
+              "</text>";
+          });
+          const line = pts
+            .map(
+              (p, i) =>
+                (i ? "L" : "M") + x(i).toFixed(1) + " " + y(p.pct).toFixed(1),
+            )
+            .join(" ");
+          const area =
+            pts.length > 1
+              ? '<path class="ar" d="' +
+                line +
+                " L" +
+                x(pts.length - 1).toFixed(1) +
+                " " +
+                y(0) +
+                " L" +
+                x(0).toFixed(1) +
+                " " +
+                y(0) +
+                ' Z"/>'
+              : "";
+          const dots = pts
+            .map(
+              (p, i) =>
+                '<circle class="pt' +
+                (i === pts.length - 1 ? " last" : "") +
+                '" cx="' +
+                x(i).toFixed(1) +
+                '" cy="' +
+                y(p.pct).toFixed(1) +
+                '" r="' +
+                (i === pts.length - 1 ? 5 : 4) +
+                '"/>',
+            )
+            .join("");
+          const xl = pts
+            .map((p, i) =>
+              pts.length <= 8 || i % 2 === 0 || i === pts.length - 1
+                ? '<text class="ax" x="' +
+                  x(i).toFixed(1) +
+                  '" y="' +
+                  (H - 8) +
+                  '" text-anchor="middle">' +
+                  p.label +
+                  "</text>"
+                : "",
+            )
+            .join("");
+          const last = pts[pts.length - 1],
+            ly = last.pct >= 90 ? y(last.pct) + 20 : y(last.pct) - 11;
+          return (
+            '<svg viewBox="0 0 ' +
+            W +
+            " " +
+            H +
+            '" role="img" aria-label="Test natijalari dinamikasi">' +
+            g +
+            area +
+            '<path class="ln" d="' +
+            line +
+            '"/>' +
+            dots +
+            '<text class="vl" x="' +
+            x(pts.length - 1).toFixed(1) +
+            '" y="' +
+            ly.toFixed(1) +
+            '">' +
+            last.pct +
+            "%</text>" +
+            xl +
+            "</svg>"
+          );
+        }
+        function viewResults() {
+          const ss = S.sessions.slice().sort((a, b) => a.ts - b.ts);
+          const avg = avgScore(),
+            best = ss.length
+              ? Math.max.apply(
+                  null,
+                  ss.map((s) => Math.round((100 * s.right) / s.total)),
+                )
+              : null;
+          const measured = TOPICS.map((t) => ({ t, m: mastery(t.id) }))
+            .filter((x) => x.m != null)
+            .sort((a, b) => b.m - a.m);
+          const strong = measured.filter((x) => x.m >= 80).slice(0, 3),
+            weak = measured
+              .filter((x) => x.m < 80)
+              .slice(-3)
+              .reverse();
+          const kindLabel = (s) =>
+            s.kind === "diag"
+              ? "Diagnostika"
+              : s.kind === "weak"
+                ? "Zaif mavzular"
+                : TOPIC_BY_ID[s.items[0].topicId].title;
+          return (
+            (S.demo ? demoBanner() : "") +
+            '<section class="hero"><p class="eyebrow">Natijalar</p><h1>Sizning <span class="mk">o‘sishingiz</span></h1></section>' +
+            '<section class="card strip"><div><span class="eyebrow">Topshirilgan testlar</span><span class="big">' +
+            ss.length +
+            "</span></div>" +
+            '<div><span class="eyebrow">O‘rtacha natija</span><span class="big">' +
+            (avg == null ? "—" : avg + "%") +
+            "</span></div>" +
+            '<div><span class="eyebrow">Eng yaxshi natija</span><span class="big">' +
+            (best == null ? "—" : best + "%") +
+            "</span></div>" +
+            '<div><span class="eyebrow">O‘rganilgan mavzular</span><span class="big">' +
+            Object.keys(S.learned).length +
+            " / " +
+            TOPICS.length +
+            "</span></div></section>" +
+            '<section class="card"><h2 style="margin-bottom:12px">Test natijalari dinamikasi</h2>' +
+            (ss.length
+              ? '<div class="chartwrap">' +
+                chartSVG(
+                  ss
+                    .slice(-12)
+                    .map((s) => ({
+                      pct: Math.round((100 * s.right) / s.total),
+                      label: shortDate(s.ts),
+                    })),
+                ) +
+                "</div>"
+              : '<p class="muted">Hali test topshirilmagan. Birinchi testdan keyin grafik shu yerda paydo bo‘ladi.</p>') +
+            "</section>" +
+            '<div class="grid2"><section class="card"><h3 style="margin-bottom:6px">Kuchli tomonlar</h3>' +
+            (strong.length
+              ? strong
+                  .map(
+                    (x) =>
+                      '<div class="mrow" style="grid-template-columns:1fr auto"><span>' +
+                      esc(x.t.title) +
+                      "</span>" +
+                      pillFor(x.m) +
+                      "</div>",
+                  )
+                  .join("")
+              : '<p class="muted">80% va undan yuqori natijali mavzu hozircha yo‘q.</p>') +
+            "</section>" +
+            '<section class="card"><h3 style="margin-bottom:6px">Mustahkamlash kerak</h3>' +
+            (weak.length
+              ? weak
+                  .map(
+                    (x) =>
+                      '<div class="mrow" style="grid-template-columns:1fr auto"><a href="#dars-' +
+                      x.t.id +
+                      '">' +
+                      esc(x.t.title) +
+                      "</a>" +
+                      pillFor(x.m) +
+                      "</div>",
+                  )
+                  .join("")
+              : '<p class="muted">Zaif mavzu topilmadi.</p>') +
+            "</section></div>" +
+            '<section class="card"><h2 style="margin-bottom:6px">Barcha mavzular</h2>' +
+            TOPICS.map((t) => {
+              const m = mastery(t.id);
+              return (
+                '<div class="mrow"><span><span class="dot" style="--c:' +
+                SUBJ_BY_ID[t.subject].c +
+                ';display:inline-block;margin-right:8px"></span>' +
+                esc(t.title) +
+                "</span>" +
+                bar(m, SUBJ_BY_ID[t.subject].c) +
+                '<span class="mono muted" style="text-align:right">' +
+                (m == null ? "—" : m + "%") +
+                "</span></div>"
+              );
+            }).join("") +
+            "</section>" +
+            '<section class="card"><h2 style="margin-bottom:6px">Test tarixi</h2>' +
+            (ss.length
+              ? '<div class="tablewrap"><table><thead><tr><th>Sana</th><th>Test</th><th class="n">To‘g‘ri</th><th class="n">Foiz</th></tr></thead><tbody>' +
+                ss
+                  .slice()
+                  .reverse()
+                  .slice(0, 15)
+                  .map(
+                    (s) =>
+                      '<tr><td class="mono">' +
+                      shortDate(s.ts) +
+                      "</td><td>" +
+                      esc(kindLabel(s)) +
+                      '</td><td class="n">' +
+                      s.right +
+                      "/" +
+                      s.total +
+                      '</td><td class="n">' +
+                      Math.round((100 * s.right) / s.total) +
+                      "%</td></tr>",
+                  )
+                  .join("") +
+                "</tbody></table></div>"
+              : '<p class="muted">Tarix bo‘sh.</p>') +
+            "</section>"
+          );
+        }
+
+        let resetArmed = false;
+        function viewProfile() {
+          const p = S.profile,
+            ss = SUBJECTS.map((s) => ({ s, m: subjectMastery(s.id) }));
+          const meas = ss.filter((x) => x.m != null).sort((a, b) => b.m - a.m);
+          const initial = (p.name || "O").trim().charAt(0).toUpperCase();
+          return (
+            (S.demo ? demoBanner() : "") +
+            '<section class="row" style="gap:18px"><div class="avatar" aria-hidden="true">' +
+            esc(initial) +
+            '</div><div><p class="eyebrow">Shaxsiy o‘quv profili</p><h1>' +
+            esc(p.name || "O‘quvchi") +
+            "</h1></div></section>" +
+            '<form class="card stack" id="pform"><h2>Ma’lumotlar</h2><div class="form">' +
+            '<div class="field"><label for="pf-name">Ism</label><input id="pf-name" name="name" value="' +
+            esc(p.name) +
+            '" maxlength="40" autocomplete="given-name" placeholder="Ismingiz"></div>' +
+            '<div class="field"><label for="pf-grade">Sinf</label><select id="pf-grade" name="grade">' +
+            [5, 6, 7, 8, 9, 10, 11]
+              .map(
+                (g) =>
+                  '<option value="' +
+                  g +
+                  '"' +
+                  (+p.grade === g ? " selected" : "") +
+                  ">" +
+                  g +
+                  "-sinf</option>",
+              )
+              .join("") +
+            "</select></div>" +
+            '<div class="field"><label for="pf-goal">Haftalik maqsad (mavzu)</label><input id="pf-goal" name="goal" type="number" min="1" max="12" value="' +
+            p.weeklyGoal +
+            '"></div>' +
+            '<div class="field"><label for="pf-focus">Asosiy fan</label><select id="pf-focus" name="focus">' +
+            SUBJECTS.map(
+              (s) =>
+                '<option value="' +
+                s.id +
+                '"' +
+                (p.focus === s.id ? " selected" : "") +
+                ">" +
+                s.name +
+                "</option>",
+            ).join("") +
+            "</select></div></div>" +
+            '<div class="row"><button class="btn primary" type="submit">Saqlash</button><span class="note" id="pform-note" role="status"></span></div></form>' +
+            '<section class="card"><h2 style="margin-bottom:6px">O‘quv darajasi</h2>' +
+            ss
+              .map(
+                (x) =>
+                  '<div class="subj"><div class="name"><span class="dot" style="--c:' +
+                  x.s.c +
+                  '"></span>' +
+                  x.s.name +
+                  "</div>" +
+                  bar(x.m, x.s.c) +
+                  '<span class="mono muted" style="text-align:right">' +
+                  (x.m == null ? "—" : x.m + "%") +
+                  "</span></div>",
+              )
+              .join("") +
+            '<p class="muted" style="margin-top:12px">' +
+            (meas.length
+              ? "Eng kuchli fan: <b>" +
+                meas[0].s.name +
+                "</b>" +
+                (meas.length > 1
+                  ? ". Ko‘proq e’tibor kerak: <b>" +
+                    meas[meas.length - 1].s.name +
+                    "</b>."
+                  : ".")
+              : "Daraja aniqlanishi uchun birinchi testni topshiring.") +
+            " Ketma-ket faol kunlar: <b>" +
+            streak() +
+            "</b>.</p></section>" +
+            '<section class="card flat stack"><h3>Ma’lumotlarni boshidan boshlash</h3><p class="muted">Barcha test natijalari, o‘rganilgan mavzular va suhbat tarixi shu qurilmadan o‘chiriladi.</p>' +
+            '<div class="row"><button class="btn danger" type="button" data-act="reset">' +
+            (resetArmed ? "Ha, hammasini o‘chirish" : "Hammasini o‘chirish") +
+            "</button>" +
+            (resetArmed
+              ? '<button class="btn" type="button" data-act="reset-cancel">Bekor qilish</button>'
+              : "") +
+            "</div></section>"
+          );
+        }
+
+        function bubble(m) {
+          return (
+            '<div class="msg ' +
+            (m.role === "user" ? "u" : "a") +
+            '">' +
+            fmt(m.content) +
+            "</div>"
+          );
+        }
+        function viewTutor() {
+          const opts =
+            '<option value="">Umumiy savol</option>' +
+            TOPICS.map(
+              (t) =>
+                '<option value="' +
+                t.id +
+                '"' +
+                (tutor.topic === t.id ? " selected" : "") +
+                ">" +
+                esc(subjName(t.subject)) +
+                " · " +
+                esc(t.title) +
+                "</option>",
+            ).join("");
+          const chips = [
+            "Mavzuni juda sodda qilib tushuntir",
+            "Menga misol keltir",
+            "Meni tekshir",
+            "Xatolarim sababi nima?",
+          ];
+          return (
+            '<section class="hero"><p class="eyebrow">AI Tutor</p><h1>Tushunmagan joyingizni <span class="mk">so‘rang</span></h1><p class="lead">Mavzuni tanlang va savol bering. Tutor sodda tilda tushuntiradi va sizni tekshiradi.</p></section>' +
+            '<section class="card tutor"><div class="row between"><div class="field" style="min-width:220px;flex:1;max-width:380px"><label for="tutor-topic">Mavzu</label><select id="tutor-topic">' +
+            opts +
+            "</select></div>" +
+            '<button class="btn small" type="button" data-act="clear-chat">Suhbatni tozalash</button></div>' +
+            '<div class="chat" id="chat" aria-live="polite">' +
+            (chat.length
+              ? chat.map(bubble).join("")
+              : '<div class="empty"><h3>Salom! Men sizning AI Tutoringizman.</h3><p class="muted">Quyidagi tugmalardan birini bosing yoki o‘z savolingizni yozing.</p></div>') +
+            "</div>" +
+            '<div class="chips">' +
+            chips
+              .map(
+                (c) =>
+                  '<button class="chip" type="button" data-act="chip" data-text="' +
+                  esc(c) +
+                  '" aria-pressed="false">' +
+                  c +
+                  "</button>",
+              )
+              .join("") +
+            "</div>" +
+            '<form class="composer" id="cform"><textarea id="chat-input" rows="1" placeholder="Savolingizni yozing..." aria-label="Savol"></textarea>' +
+            '<button class="btn primary" type="submit" id="send-btn">Yuborish</button><button class="btn" type="button" data-act="stop" id="stop-btn" hidden>To‘xtatish</button></form>' +
+            '<p class="note" id="prov-note">AI holati tekshirilmoqda...</p></section>'
+          );
+        }
+        function notFound() {
+          return '<section class="hero"><h1>Sahifa topilmadi</h1><p class="lead">Bunday mavzu yo‘q.</p></section><div><a class="btn primary" href="#bosh">Bosh sahifaga</a></div>';
+        }
+
+        /* ================= MARSHRUT ================= */
+        function parseRoute() {
+          const h = (location.hash || "#bosh").slice(1);
+          if (h.indexOf("dars-") === 0)
+            return { name: "dars", id: h.slice(5), nav: "darslar" };
+          if (h.indexOf("test-") === 0)
+            return { name: "test", id: h.slice(5), nav: "testlar" };
+          return { name: h, nav: h };
+        }
+        function renderNav(active) {
+          const html = NAV.map(
+            (n) =>
+              '<a href="#' +
+              n.h +
+              '"' +
+              (n.h === active ? ' aria-current="page"' : "") +
+              '><svg viewBox="0 0 24 24" aria-hidden="true"><path d="' +
+              ICONS[n.h] +
+              '"/></svg><span>' +
+              "</span></a>",
+          );
+          $("#nav").innerHTML = NAV.map((n, i) =>
+            html[i].replace("<span></span>", "<span>" + n.t + "</span>"),
+          ).join("");
+          $("#tabbar").innerHTML = NAV.map((n, i) =>
+            html[i].replace("<span></span>", "<span>" + n.s + "</span>"),
+          ).join("");
+        }
+        function render() {
+          const r = parseRoute(),
+            v = $("#view");
+          if (tutor.ctl && r.name !== "tutor") {
+            tutor.ctl.abort();
+          }
+          let html;
+          switch (r.name) {
+            case "bosh":
+              html = viewHome();
+              break;
+            case "darslar":
+              html = viewLessons();
+              break;
+            case "dars":
+              html = viewLesson(r.id);
+              break;
+            case "testlar":
+              html = viewTests();
+              break;
+            case "test":
+              html = viewTest(r.id);
+              break;
+            case "natijalar":
+              html = viewResults();
+              break;
+            case "profil":
+              html = viewProfile();
+              break;
+            case "tutor":
+              html = viewTutor();
+              break;
+            default:
+              html = notFound();
+          }
+          v.innerHTML = html;
+          renderNav(r.nav);
+          if (r.name === "tutor") initTutor();
+        }
+        window.addEventListener("hashchange", () => {
+          window.scrollTo(0, 0);
+          render();
+        });
+
+        /* ================= AI TUTOR MANTIG‘I ================= */
+        function initTutor() {
+          const chatEl = $("#chat");
+          if (chatEl) chatEl.scrollTop = chatEl.scrollHeight;
+          getProvider().then((p) => {
+            const el = $("#prov-note");
+            if (!el) return;
+            el.textContent = p
+              ? p.kind === "claude"
+                ? "AI Tutor ulangan. Javoblar Claude orqali yaratiladi."
+                : "AI Tutor serverga ulanadi. Server javob bermasa, dars materiallari asosida oflayn javob beriladi."
+              : "AI serveri ulanmagan. Tutor hozircha dars materiallari asosida oflayn javob beradi (README: server.js ni ishga tushiring).";
+          });
+          if (tutor.pending) {
+            const p = tutor.pending;
+            tutor.pending = null;
+            send(p);
+          }
+        }
+        function setBusy(b) {
+          tutor.busy = b;
+          const s = $("#send-btn"),
+            x = $("#stop-btn");
+          if (s) s.disabled = b;
+          if (x) x.hidden = !b;
+        }
+        async function send(text) {
+          text = String(text || "").trim();
+          if (!text || tutor.busy) return;
+          const topic = TOPIC_BY_ID[tutor.topic] || null;
+          chat.push({ role: "user", content: text });
+          const box = $("#chat");
+          if (!box) return;
+          const empty = box.querySelector(".empty");
+          if (empty) empty.remove();
+          box.insertAdjacentHTML(
+            "beforeend",
+            bubble({ role: "user", content: text }),
+          );
+          box.insertAdjacentHTML(
+            "beforeend",
+            '<div class="msg a" id="live"><span class="dots"><span></span><span></span><span></span></span></div>',
+          );
+          const live = $("#live");
+          box.scrollTop = box.scrollHeight;
+          setBusy(true);
+          tutor.ctl = new AbortController();
+          let reply = "",
+            partial = "";
+          try {
+            const prov = await getProvider();
+            if (prov) {
+              const hist = chat.slice(-12);
+              while (hist.length && hist[0].role !== "user") hist.shift();
+              try {
+                reply = await callAI(prov, buildSystem(topic), hist, {
+                  signal: tutor.ctl.signal,
+                  onText: (t) => {
+                    partial = t;
+                    if (live.isConnected) {
+                      live.innerHTML = fmt(t);
+                      box.scrollTop = box.scrollHeight;
+                    }
+                  },
+                });
+              } catch (e) {
+                if (
+                  (e && e.code === "cancelled") ||
+                  (e && e.name === "AbortError")
+                )
+                  throw e;
+                reply =
+                  localTutor(text, topic) +
+                  "\n\n_(AI serveriga ulanib bo‘lmadi, shuning uchun dars materiallari asosida javob berildi.)_";
+                reply = reply.replace(/_\((.+?)\)_/, "$1");
+              }
+            } else {
+              reply = localTutor(text, topic);
+            }
+            chat.push({ role: "assistant", content: reply });
+            if (live.isConnected) {
+              live.id = "";
+              live.innerHTML = fmt(reply);
+            }
+          } catch (e) {
+            const keep = (e && e.text) || partial;
+            if (keep) {
+              chat.push({ role: "assistant", content: keep });
+              if (live.isConnected) {
+                live.id = "";
+                live.innerHTML = fmt(keep);
+              }
+            } else {
+              chat.pop();
+              if (live.isConnected) live.remove();
+            }
+          } finally {
+            saveChat();
+            tutor.ctl = null;
+            setBusy(false);
+            const b = $("#chat");
+            if (b) b.scrollTop = b.scrollHeight;
+          }
+        }
+
+        /* ================= HODISALAR ================= */
+        document.addEventListener("click", (e) => {
+          const el = e.target.closest("[data-act]");
+          if (!el) return;
+          const act = el.dataset.act,
+            id = el.dataset.id;
+          switch (act) {
+            case "theme": {
+              const root = document.documentElement,
+                cur =
+                  root.dataset.theme ||
+                  (matchMedia("(prefers-color-scheme: dark)").matches
+                    ? "dark"
+                    : "light");
+              root.dataset.theme = cur === "dark" ? "light" : "dark";
+              LS.set("smartedu.theme", root.dataset.theme);
+              break;
+            }
+            case "clear-demo":
+              S.sessions = [];
+              S.learned = {};
+              S.demo = false;
+              save();
+              render();
+              break;
+            case "filter":
+              lessonFilter = id;
+              render();
+              break;
+            case "learned":
+              leaveDemo();
+              if (S.learned[id]) delete S.learned[id];
+              else S.learned[id] = Date.now();
+              save();
+              render();
+              break;
+            case "explain":
+              goTutor(id, "Bu mavzuni menga juda sodda qilib tushuntirib ber.");
+              break;
+            case "pick": {
+              if (!run || run.picked != null) break;
+              const cur = run.qs[run.i],
+                q = TOPIC_BY_ID[cur.topicId].questions[cur.qi],
+                i = +el.dataset.i;
+              run.picked = i;
+              run.results.push({
+                topicId: cur.topicId,
+                qi: cur.qi,
+                ok: i === q.correct,
+              });
+              render();
+              break;
+            }
+            case "next":
+              if (run) {
+                run.i++;
+                run.picked = null;
+                window.scrollTo(0, 0);
+                render();
+              }
+              break;
+            case "retry": {
+              const k = run && run.key;
+              run = null;
+              if (k) {
+                startRun(k);
+                render();
+              }
+              break;
+            }
+            case "explain-wrong": {
+              const wr = run.results.filter((r) => !r.ok);
+              tutor.lastWrong = wr.map((r) => ({
+                topicId: r.topicId,
+                qi: r.qi,
+              }));
+              const list = wr
+                .map((r, i) => {
+                  const q = TOPIC_BY_ID[r.topicId].questions[r.qi];
+                  return (
+                    i +
+                    1 +
+                    ") " +
+                    q.q +
+                    " (to‘g‘ri javob: " +
+                    q.options[q.correct] +
+                    ")"
+                  );
+                })
+                .join("\n");
+              goTutor(
+                wr.length === 1 ? wr[0].topicId : "",
+                "Quyidagi savollarda xato qildim. Har birini sodda tushuntirib ber, nega bu javob to‘g‘ri ekanini ko‘rsat:\n" +
+                  list,
+              );
+              break;
+            }
+            case "practice":
+              makePractice();
+              break;
+            case "reset":
+              if (!resetArmed) {
+                resetArmed = true;
+                render();
+              } else {
+                S = {
+                  demo: false,
+                  profile: S.profile,
+                  learned: {},
+                  sessions: [],
+                };
+                chat = [];
+                run = null;
+                practice.items = [];
+                practice.status = "idle";
+                resetArmed = false;
+                save();
+                saveChat();
+                render();
+              }
+              break;
+            case "reset-cancel":
+              resetArmed = false;
+              render();
+              break;
+            case "chip":
+              send(el.dataset.text);
+              break;
+            case "stop":
+              if (tutor.ctl) tutor.ctl.abort();
+              break;
+            case "clear-chat":
+              chat = [];
+              saveChat();
+              tutor.pendingQ = null;
+              render();
+              break;
+          }
+        });
+        document.addEventListener("submit", (e) => {
+          if (e.target.id === "pform") {
+            e.preventDefault();
+            const f = new FormData(e.target);
+            leaveDemo();
+            S.profile = {
+              name: String(f.get("name") || "")
+                .trim()
+                .slice(0, 40),
+              grade: +f.get("grade") || 8,
+              weeklyGoal: Math.min(12, Math.max(1, +f.get("goal") || 4)),
+              focus: String(f.get("focus") || "math"),
+            };
+            save();
+            const n = $("#pform-note");
+            if (n) n.textContent = "Saqlandi.";
+            const av = $(".avatar");
+            if (av)
+              av.textContent = (S.profile.name || "O").charAt(0).toUpperCase();
+            const h1 = $("h1");
+            if (h1) h1.textContent = S.profile.name || "O‘quvchi";
+          } else if (e.target.id === "cform") {
+            e.preventDefault();
+            const ta = $("#chat-input");
+            const v = ta.value;
+            ta.value = "";
+            ta.style.height = "";
+            send(v);
+          }
+        });
+        document.addEventListener("change", (e) => {
+          if (e.target.id === "tutor-topic") tutor.topic = e.target.value;
+        });
+        document.addEventListener("keydown", (e) => {
+          if (
+            e.target.id === "chat-input" &&
+            e.key === "Enter" &&
+            !e.shiftKey &&
+            !e.isComposing
+          ) {
+            e.preventDefault();
+            $("#cform").requestSubmit();
+          }
+        });
+        document.addEventListener("input", (e) => {
+          if (e.target.id === "chat-input") {
+            e.target.style.height = "auto";
+            e.target.style.height = Math.min(140, e.target.scrollHeight) + "px";
+          }
+        });
+
+        /* ================= BOSHLASH ================= */
+        const th = LS.get("smartedu.theme", null);
+        if (th) document.documentElement.dataset.theme = th;
+        render();
+      })();
+    </script>
+  </body>
+</html>
